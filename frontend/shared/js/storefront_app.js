@@ -17,6 +17,14 @@ class StorefrontApp {
             localStorage.setItem('recopulse_visitor_id', this.visitorId);
         }
 
+        // Check for fresh browser tab / session isolation
+        const isFreshTabSession = !sessionStorage.getItem('recopulse_session_active');
+        if (isFreshTabSession) {
+            sessionStorage.setItem('recopulse_session_active', '1');
+            localStorage.removeItem(`reco_cart_${this.visitorId}_${this.storeId}`);
+            localStorage.removeItem(`reco_wishlist_${this.visitorId}_${this.storeId}`);
+        }
+
         this.cart = JSON.parse(localStorage.getItem(`reco_cart_${this.visitorId}_${this.storeId}`)) || [];
         this.wishlist = new Set(JSON.parse(localStorage.getItem(`reco_wishlist_${this.visitorId}_${this.storeId}`)) || []);
         
@@ -1202,6 +1210,18 @@ class StorefrontApp {
 
     renderRetentionBanner() {
         let container = document.getElementById('cart-retention-banner');
+        
+        // CRITICAL FIX: Retention offer banner MUST ONLY appear when cart has items.
+        // If cart is empty, remove banner completely and reset discount.
+        if (!this.cart || this.cart.length === 0) {
+            if (container) {
+                container.innerHTML = '';
+                container.remove();
+            }
+            this.discountAmount = 0;
+            return;
+        }
+
         if (!container) {
             container = document.createElement('div');
             container.id = 'cart-retention-banner';
@@ -1211,7 +1231,7 @@ class StorefrontApp {
 
         this.discountAmount = 150;
 
-        const cartProduct = this.cart[0] || (this.catalog.length ? this.catalog[0] : null);
+        const cartProduct = this.cart[0];
         const recoItem = this.catalog.find(p => p.product_id !== (cartProduct ? cartProduct.product_id : null)) || this.catalog[1];
 
         container.innerHTML = `
