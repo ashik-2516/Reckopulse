@@ -81,7 +81,7 @@ RecoPulse/
 │   └── ranking/            # Hybrid ranker & recommendation scoring
 ├── tests/                  # Automated unit & integration test suite
 ├── main.py                 # Application entry point
-├── Procfile                # Render / Cloud deployment specification
+├── Procfile                # WSGI process specification
 └── requirements.txt        # Python package dependencies
 ```
 
@@ -137,16 +137,6 @@ Execute the test suite covering diagnostic ablation, security, and end-to-end in
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-
----
-
-## Production Deployment
-
-RecoPulse is pre-configured for deployment on **Render**:
-
-1. Connect `ashik-2516/Reckopulse` on [Render](https://render.com).
-2. Render automatically detects `Procfile` (`web: gunicorn main:app`) and `requirements.txt`.
-3. Select **Deploy Web Service**.
 
 ---
 
