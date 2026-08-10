@@ -1,61 +1,155 @@
-# RecoPulse
+# RecoPulse — Real-Time Personalized Recommendation Platform
 
-### **Intelligent Recommendations. Built for Every Store.**
-
-**Formal Academic Project Title**: *Personalized Product Recommendation System Using Machine Learning for Optimized E-Commerce Experience*
+RecoPulse is an enterprise-grade, multi-tenant product recommendation engine designed for modern e-commerce storefronts. Powered by a hybrid machine learning pipeline (SVD Collaborative Filtering, Content-Based TF-IDF Vector Similarity, Frequently Bought Together, and Real-Time Session Intent), RecoPulse delivers personalized product recommendations, trend signals, retention offers, and merchant analytics.
 
 ---
 
-## 📌 Executive Summary & Proposition
+## Architecture Overview
 
-**RecoPulse** provides enterprise-style recommendation intelligence without enterprise-level complexity. Designed for multi-domain e-commerce businesses, RecoPulse integrates task-aware hybrid recommendation algorithms, real-time session vectorization, targeted trend injection with relevance-scaling guardrails, and a zero-dependency 1-line JavaScript SDK.
-
----
-
-## 🏬 Four Original Commercial Storefront Verticals
-
-1. **Aura Threads** (`/store/clothing`): Original commercial fashion storefront with style vectorization, department navigation, size/color selectors, and targeted trend signals.
-2. **Nexus Marketplace** (`/store/general`): Original consumer-electronics marketplace powered by Collaborative SVD Matrix Factorization and cross-category tech discovery.
-3. **FreshPantry Superstore** (`/store/grocery`): Original grocery/superstore interface with fresh organic milk, quick-add quantity controls, and Frequently Bought Together (FBT) basket building.
-4. **SavorCraft Pickles** (`/store/pickles`): Original premium artisanal-food storefront with spice level indicators (🌶️🌶️🌶️), jar weight options ($300\text{g}, 500\text{g}, 1\text{kg}$), cold-start item similarity, and merchant promotional boosts.
-
----
-
-## 🔬 Controlled Empirical Diagnostic Matrix ($N=50$ Users, $N=500$ Events)
-
-> **Metric Scope Note**: Evaluated over temporal train/test splits on a controlled diagnostic benchmark. Values represent Precision@K, Recall@K, MAP@K, and NDCG@K, not classification accuracy.
-
-| Experiment Name | Precision@4 | Recall@4 | MAP@4 | NDCG@4 | Precision@5 | NDCG@5 | Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Exp 1: SVD Only** | **0.6550** | **0.5988** | **0.6828** | **0.7570** | **0.5480** | **0.7203** | 13.17ms |
-| **Exp 2: SVD + Content** | **0.6600** | **0.6038** | **0.6735** | **0.7525** | **0.5640** | **0.7249** | 25.88ms |
-| **Exp 3: SVD + Popularity** | 0.5900 | 0.5536 | 0.4761 | 0.6058 | 0.5480 | 0.6170 | 26.57ms |
-| **Exp 4: SVD + Session** | **0.6550** | **0.5988** | **0.6828** | **0.7570** | **0.5480** | **0.7203** | 15.49ms |
-| **Exp 5: SVD + Content + Popularity** | 0.5800 | 0.5412 | 0.5506 | 0.6680 | 0.5440 | 0.6774 | 31.86ms |
-| **Exp 6: SVD + Content + Pop + Session** | 0.5700 | 0.5312 | 0.5390 | 0.6575 | 0.5400 | 0.6704 | 38.13ms |
-| **Exp 7: Full Hybrid Ranker** | 0.5700 | 0.5312 | 0.5390 | 0.6575 | 0.5400 | 0.6704 | 46.62ms |
-| **Exp 8: Full Hybrid + MMR Diversity** | 0.5700 | 0.5312 | 0.5390 | 0.6575 | 0.5400 | 0.6704 | 40.03ms |
-
----
-
-## 💻 Quickstart & Live Verification
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run automated test suite (12 tests)
-python -m unittest discover -s tests -p "test_*.py"
-
-# Launch RecoPulse Platform
-python main.py
+```text
+               +----------------------------------+
+               |     RecoPulse Web Interface     |
+               | (Storefronts & Merchant Console) |
+               +----------------------------------+
+                                |
+                                v
+               +----------------------------------+
+               |        Flask REST API Gateway     |
+               |       (Routing & Controllers)    |
+               +----------------------------------+
+                                |
+                                v
+               +----------------------------------+
+               |     Hybrid Recommendation Engine |
+               | (SVD + Content + Session + Trend)|
+               +----------------------------------+
+                                |
+                                v
+               +----------------------------------+
+               |         SQLite Storage Engine    |
+               | (Catalog, Events & Analytics DB) |
+               +----------------------------------+
 ```
 
-Access the application in your browser:
-* **RecoPulse Home**: [`http://127.0.0.1:5000/`](http://127.0.0.1:5000/)
-* **Aura Threads (Fashion)**: [`http://127.0.0.1:5000/store/clothing`](http://127.0.0.1:5000/store/clothing)
-* **Nexus Marketplace (Tech)**: [`http://127.0.0.1:5000/store/general`](http://127.0.0.1:5000/store/general)
-* **FreshPantry Superstore (Grocery & Milk)**: [`http://127.0.0.1:5000/store/grocery`](http://127.0.0.1:5000/store/grocery)
-* **SavorCraft Pickles (Regional Food)**: [`http://127.0.0.1:5000/store/pickles`](http://127.0.0.1:5000/store/pickles)
-* **Merchant Console**: [`http://127.0.0.1:5000/merchant/dashboard`](http://127.0.0.1:5000/merchant/dashboard)
-* **Developer SDK Demo**: [`http://127.0.0.1:5000/demo/external`](http://127.0.0.1:5000/demo/external)
+---
+
+## Core Capabilities
+
+### 1. Hybrid Machine Learning Scoring Model
+- **SVD Matrix Factorization**: Collaborative filtering model trained on user transaction history.
+- **Content-Based TF-IDF**: Vector similarity matching across titles, descriptions, categories, and tags.
+- **Session Intent Engine**: Real-time intent scoring computed from in-session clicks, views, and cart actions.
+- **Trend & Merchant Rule Engine**: Real-time promotional score boosts and trend signal injections.
+
+### 2. Multi-Domain E-Commerce Storefronts
+RecoPulse features four fully operational commercial store domains:
+- **Aura Threads**: Apparel & fashion storefront (`/store/clothing`).
+- **Nexus Marketplace**: Consumer electronics storefront (`/store/general`).
+- **FreshPantry**: Daily grocery & essentials superstore (`/store/grocery`).
+- **SavorCraft Pickles**: Regional artisanal pickles & pantry storefront (`/store/pickles`).
+
+### 3. Executive Merchant Analytics Console
+- Real-time conversion tracking, click-through rate (CTR) analytics, and revenue attribution.
+- Dynamic promotional rule configuration and trend signal injections (`/merchant/dashboard`).
+
+### 4. Enterprise Design System
+- Clean theme switching (Dark/Light) with instant state persistence.
+- Real-time commerce search autocomplete overlay supporting keyboard navigation (`ArrowUp`, `ArrowDown`, `Enter`, `Escape`).
+- Complete INR monetary formatting across all 135 catalog products and checkout workflows.
+- Fully responsive layout engineered for mobile, tablet, laptop, and desktop viewports.
+
+---
+
+## Directory Structure
+
+```text
+RecoPulse/
+├── backend/
+│   ├── api/                # REST API endpoints & route handlers
+│   ├── database/           # SQLite database schema & connection managers
+│   └── app.py              # Flask core application initialization
+├── frontend/
+│   ├── clothing_store/     # Aura Threads apparel storefront
+│   ├── ecommerce_store/    # Nexus Marketplace electronics storefront
+│   ├── shopping_mart/      # FreshPantry grocery storefront
+│   ├── pickle_store/       # SavorCraft Pickles storefront
+│   ├── merchant_dashboard/ # Merchant analytics console
+│   └── shared/             # Shared CSS, JS modules, favicons, & assets
+├── ml/
+│   ├── models/             # SVD, Content-Based, Popularity, & Trend models
+│   ├── pipeline/           # Data preprocessing & dataset loaders
+│   └── ranking/            # Hybrid ranker & recommendation scoring
+├── tests/                  # Automated unit & integration test suite
+├── main.py                 # Application entry point
+├── Procfile                # Render / Cloud deployment specification
+└── requirements.txt        # Python package dependencies
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Python 3.10+
+- `pip` package manager
+
+### Local Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ashik-2516/Reckopulse.git
+   cd Reckopulse
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+   ```bash
+   python main.py
+   ```
+
+4. Access the storefronts in your web browser:
+   - Platform Home: `http://127.0.0.1:5000/`
+   - Aura Threads: `http://127.0.0.1:5000/store/clothing`
+   - Merchant Console: `http://127.0.0.1:5000/merchant/dashboard`
+
+---
+
+## API Reference
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/health` | GET | Returns service status and API version |
+| `/api/recommendations` | POST | Returns personalized recommendations for a user/session |
+| `/api/events` | POST | Logs user interaction events (view, wishlist, cart, purchase) |
+| `/api/merchant/analytics` | GET | Retrieves merchant performance metrics and conversion stats |
+| `/api/merchant/trend` | POST | Injects a real-time trend signal for a product |
+
+---
+
+## Automated Test Suite
+
+Execute the test suite covering diagnostic ablation, security, and end-to-end integration:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+---
+
+## Production Deployment
+
+RecoPulse is pre-configured for deployment on **Render**:
+
+1. Connect `ashik-2516/Reckopulse` on [Render](https://render.com).
+2. Render automatically detects `Procfile` (`web: gunicorn main:app`) and `requirements.txt`.
+3. Select **Deploy Web Service**.
+
+---
+
+## License
+
+MIT License. Designed for commercial product recommendation applications.

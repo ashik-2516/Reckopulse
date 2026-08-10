@@ -4,7 +4,7 @@
 
 ---
 
-## 📌 Section A: Dataset & Population Integrity
+##  Section A: Dataset & Population Integrity
 
 All offline benchmarks were computed on temporal train/test splits derived from transaction interaction logs without synthetic score fabrication.
 
@@ -27,7 +27,7 @@ All offline benchmarks were computed on temporal train/test splits derived from 
 
 ---
 
-## 🔬 Section B: Multi-K Signal Ablation Experimental Matrix ($K=4, 5, 8$)
+##  Section B: Multi-K Signal Ablation Experimental Matrix ($K=4, 5, 8$)
 
 To isolate why individual SVD performed differently from the equal-weighted hybrid ranker, we conducted an 8-model signal ablation study across multiple $K$ cutoffs:
 
@@ -59,7 +59,7 @@ To isolate why individual SVD performed differently from the equal-weighted hybr
 
 ---
 
-## 💡 Key Diagnostic Findings & Honest Evaluations
+##  Key Diagnostic Findings & Honest Evaluations
 
 1. **SVD Collaborative Filtering is the Primary Behavioral Driver** for users with transaction history (`Precision@4 = 0.6550`, `NDCG@4 = 0.7593`).
 2. **Content Similarity Provides Complementary Value**: Adding Content TF-IDF slightly improved Precision@4 from `0.6550` to `0.6600` and Precision@5 from `0.5600` to `0.5720`.
@@ -71,7 +71,7 @@ To isolate why individual SVD performed differently from the equal-weighted hybr
 
 ---
 
-## ⚡ Section C: Controlled Trend & Merchant Guardrail Experiment
+##  Section C: Controlled Trend & Merchant Guardrail Experiment
 
 To verify that trend signals actively move candidate ranks for target users without forcing irrelevant items onto un-targeted users:
 
@@ -89,7 +89,7 @@ $$\text{FinalScore} = S_{\text{organic}} \times (1.0 + \text{MerchantBoost} \tim
 
 ---
 
-## 🏗️ Section D: Final Frozen RecoPulse Task-Aware Architecture
+## ️ Section D: Final Frozen RecoPulse Task-Aware Architecture
 
 ```text
                          RecoPulse
@@ -124,7 +124,7 @@ $$\text{FinalScore} = S_{\text{organic}} \times (1.0 + \text{MerchantBoost} \tim
 
 ---
 
-## 🧪 Section E: Reproducible Execution Command
+##  Section E: Reproducible Execution Command
 
 To reproduce all unit tests, ML diagnostics, multi-$K$ ablation matrices, and trend guardrail experiments:
 
