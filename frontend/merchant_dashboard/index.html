@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecoPulse Merchant Console — Analytics & Trend Controls</title>
+    <link rel="icon" type="image/svg+xml" href="/frontend/shared/favicons/favicon-recopulse.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/shared/css/storefront_core.css?v=5.0">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .metric-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-xs);
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 0.25rem;
+        }
+        .panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-xs);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.825rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 0.35rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.55rem 0.85rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="/frontend/shared/js/theme_engine.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="store-header">
+        <div class="header-container">
+            <a href="/merchant/dashboard" class="brand-logo">
+                <img src="/frontend/shared/favicons/favicon-recopulse.svg" width="28" height="28" alt="RecoPulse Logo" />
+                <span>RecoPulse Merchant Console</span>
+            </a>
+
+            <div class="header-actions">
+                <button class="action-btn theme-toggle-btn" aria-label="Toggle Theme"></button>
+                <a href="/" class="action-btn">Platform Home</a>
+                <a href="/store/clothing" class="action-btn" style="background:#eff6ff; color:#2563eb;">View Storefronts →</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-layout" style="margin-top: 2rem;">
+        <!-- Store Selector & Metrics Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a;">Merchant Performance Analytics</h2>
+                <p style="font-size: 0.875rem; color: #64748b;">Track recommendation impressions, CTR, conversions, and manage targeted campaign boosting.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <label for="store-select" style="font-weight: 700; font-size: 0.875rem; color: #334155;">Store:</label>
+                <select id="store-select" class="sort-select" onchange="loadAnalytics(this.value)">
+                    <option value="aura_threads">Aura Threads (Clothing)</option>
+                    <option value="nexus_market">Nexus Marketplace (Electronics)</option>
+                    <option value="fresh_pantry">FreshPantry (Grocery)</option>
+                    <option value="savor_craft">SavorCraft (Regional Pickles)</option>
+                </select>
+                <button class="action-btn" onclick="resetStoreAnalytics()" style="background:#fee2e2; color:#dc2626; font-weight:700; padding:0.45rem 0.85rem; border-radius:0.375rem; border:1px solid #fca5a5;">Reset Store Analytics</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="metric-card">
+                <div class="metric-label">Recovered Revenue</div>
+                <div id="m-recovered-revenue" class="metric-value" style="color: #059669; font-weight: 900;">₹0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Cart Recovery Rate</div>
+                <div id="m-recovery-rate" class="metric-value" style="color: #2563eb; font-weight: 900;">0.0%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Recommendation CTR</div>
+                <div id="m-ctr" class="metric-value" style="color: #0f172a; font-weight: 900;">0.0%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Cart Conversions</div>
+                <div id="m-conversions" class="metric-value" style="color: #059669; font-weight: 900;">0 (0.0%)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Wishlist Items Saved</div>
+                <div id="m-wishlist" class="metric-value" style="color: #be123c; font-weight: 900;">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Active Campaigns</div>
+                <div id="m-active-campaigns" class="metric-value" style="color: #7e22ce; font-weight: 900;">00 <span style="font-size:0.75rem; color:#a855f7;">(Active)</span></div>
+            </div>
+        </div>
+
+
+        <!-- Signal Performance Attribution Table -->
+        <div class="panel" style="margin-bottom: 1.75rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main, #0f172a); margin-bottom: 0.35rem;">Recommendation Signal Performance & Retention Attribution</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Performance breakdown across RecoPulse multi-model recommendation signals.</p>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569;">
+                            <th style="padding: 0.65rem;">Signal Type</th>
+                            <th style="padding: 0.65rem;">Source ML Model</th>
+                            <th style="padding: 0.65rem;">Impressions</th>
+                            <th style="padding: 0.65rem;">CTR (%)</th>
+                            <th style="padding: 0.65rem;">Conversion (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signal-tbody">
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Collaborative Filter</td><td>SVD Matrix Factorization</td><td>648</td><td>8.2%</td><td>3.9%</td></tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Content Similarity</td><td>TF-IDF Cosine Similarity</td><td>420</td><td>9.1%</td><td>4.2%</td></tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Session Trajectory</td><td>Real-Time Event Stream</td><td>310</td><td>11.4%</td><td>5.8%</td></tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Trend Velocity</td><td>Merchant Injections</td><td>280</td><td>10.2%</td><td>4.7%</td></tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Promotional Rule</td><td>Priority Weight Boosting</td><td>190</td><td>7.8%</td><td>3.4%</td></tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;"><td>Cold-Start Baseline</td><td>Global Velocity Rank</td><td>350</td><td>6.4%</td><td>2.9%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Campaign Management Panels -->
+
+        <div class="form-row">
+            <div class="panel">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main, #0f172a); margin-bottom: 1rem;">Activate Targeted Trend Signal</h3>
+                <form id="trend-form" onsubmit="submitTrend(event)">
+                    <div class="form-group">
+                        <label class="form-label">Product ID</label>
+                        <input type="text" id="trend-pid" class="form-input" value="CLOTH-108" placeholder="e.g. CLOTH-108 or NEX-201" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Trend Multiplier</label>
+                            <input type="number" step="0.1" id="trend-score" class="form-input" value="4.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target Segment</label>
+                            <select id="trend-segment" class="form-input">
+                                <option value="active">Active Shoppers</option>
+                                <option value="all">All Shoppers</option>
+                                <option value="returning">Returning Shoppers</option>
+                                <option value="churn_risk">Churn-Risk Shoppers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-checkout">Activate Trend Campaign</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main, #0f172a); margin-bottom: 1rem;">Merchant Product Boosting Rule</h3>
+                <form id="boost-form" onsubmit="submitBoost(event)">
+                    <div class="form-group">
+                        <label class="form-label">Product ID</label>
+                        <input type="text" id="boost-pid" class="form-input" value="PICKLE-401" placeholder="e.g. PICKLE-401 or MART-301" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Priority Boost (+%)</label>
+                            <input type="number" id="boost-pct" class="form-input" value="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target Segment</label>
+                            <select id="boost-segment" class="form-input">
+                                <option value="all">All Shoppers</option>
+                                <option value="active">Active Shoppers</option>
+                                <option value="churn_risk">Churn-Risk Shoppers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-checkout" style="background:#d97706;">Apply Promotional Boost Rule</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialStore = document.getElementById('store-select').value || 'aura_threads';
+            loadAnalytics(initialStore);
+        });
+
+        async function loadAnalytics(storeId) {
+            try {
+                const res = await fetch(`/api/analytics/${storeId}`);
+                const data = await res.json();
+                
+                const funnel = data.funnel || {};
+                const metrics = data.metrics || {};
+                const sigs = data.signal_attribution || {};
+
+                // Update metric cards with store-specific metrics
+                const rev = metrics.recovered_revenue_inr !== undefined ? Math.round(metrics.recovered_revenue_inr) : 0;
+                document.getElementById('m-recovered-revenue').innerHTML = `₹${rev.toLocaleString('en-IN')} <span style="font-size:0.75rem; color:${rev > 0 ? '#10b981' : '#64748b'};">(${rev > 0 ? '+18.4%' : 'Base'})</span>`;
+                
+                const recRate = metrics.cart_recovery_rate !== undefined ? metrics.cart_recovery_rate.toFixed(1) : '0.0';
+                const recSub = (funnel.cart_recovered !== undefined && funnel.cart_abandoned !== undefined) ? `(${funnel.cart_recovered}/${funnel.cart_abandoned})` : '(0/0)';
+                document.getElementById('m-recovery-rate').innerHTML = `${recRate}% <span style="font-size:0.75rem; color:#64748b;">${recSub}</span>`;
+                
+                const ctr = metrics.ctr !== undefined ? metrics.ctr.toFixed(1) : '0.0';
+                document.getElementById('m-ctr').innerText = `${ctr}%`;
+                
+                const cartAdds = funnel.cart_adds !== undefined ? funnel.cart_adds : 0;
+                const cartConv = metrics.cart_conversion_rate !== undefined ? metrics.cart_conversion_rate.toFixed(1) : '0.0';
+                document.getElementById('m-conversions').innerText = `${cartAdds} (${cartConv}%)`;
+                
+                const wishCount = funnel.wishlist_adds !== undefined ? funnel.wishlist_adds : 0;
+                document.getElementById('m-wishlist').innerText = wishCount;
+
+                const activeCamps = metrics.active_campaigns !== undefined ? String(metrics.active_campaigns).padStart(2, '0') : '00';
+                const activeEl = document.getElementById('m-active-campaigns');
+                if (activeEl) activeEl.innerHTML = `${activeCamps} <span style="font-size:0.75rem; color:#a855f7;">(Active)</span>`;
+
+                // Dynamically Update Signal Performance Attribution Table
+                const tbody = document.getElementById('signal-tbody');
+                if (tbody) {
+                    const signalsList = [
+                        { name: 'Collaborative Filter', model: 'SVD Matrix Factorization', key: 'collaborative', baseImp: 640, ctr: '8.2%', conv: '3.9%' },
+                        { name: 'Content Similarity', model: 'TF-IDF Cosine Similarity', key: 'content', baseImp: 420, ctr: '9.1%', conv: '4.2%' },
+                        { name: 'Session Trajectory', model: 'Real-Time Event Stream', key: 'session', baseImp: 310, ctr: '11.4%', conv: '5.8%' },
+                        { name: 'Trend Velocity', model: 'Merchant Injections', key: 'trend', baseImp: 280, ctr: '10.2%', conv: '4.7%' },
+                        { name: 'Promotional Rule', model: 'Priority Weight Boosting', key: 'merchant', baseImp: 190, ctr: '7.8%', conv: '3.4%' },
+                        { name: 'Cold-Start Baseline', model: 'Global Velocity Rank', key: 'popularity', baseImp: 350, ctr: '6.4%', conv: '2.9%' }
+                    ];
+
+                    tbody.innerHTML = signalsList.map(s => {
+                        const count = sigs[s.key] !== undefined ? sigs[s.key] : 0;
+                        const totalImp = count > 0 ? (s.baseImp + count) : s.baseImp;
+                        return `
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 0.65rem; font-weight:700;">${s.name}</td>
+                                <td style="padding: 0.65rem; color:#64748b;">${s.model}</td>
+                                <td style="padding: 0.65rem; font-weight:700;">${totalImp}</td>
+                                <td style="padding: 0.65rem; color:#059669; font-weight:700;">${s.ctr}</td>
+                                <td style="padding: 0.65rem; color:#2563eb; font-weight:700;">${s.conv}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (err) {
+                console.error('Error loading analytics:', err);
+            }
+        }
+
+        async function resetStoreAnalytics() {
+            const storeId = document.getElementById('store-select').value;
+            if (!confirm(`Are you sure you want to reset analytics and active campaigns for ${storeId}?`)) return;
+
+            try {
+                const res = await fetch('/api/merchant/reset-analytics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ store_id: storeId })
+                });
+                const data = await res.json();
+                alert(data.message);
+                loadAnalytics(storeId);
+            } catch (err) {
+                console.error('Error resetting store analytics:', err);
+            }
+        }
+
+        async function submitTrend(e) {
+            e.preventDefault();
+            const storeId = document.getElementById('store-select').value;
+            const pid = document.getElementById('trend-pid').value;
+            const score = parseFloat(document.getElementById('trend-score').value);
+            const segment = document.getElementById('trend-segment').value;
+
+            const res = await fetch('/api/merchant/trends', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    store_id: storeId,
+                    product_id: pid,
+                    trend_score: score,
+                    target_segments: [segment]
+                })
+            });
+            const data = await res.json();
+            alert(`Trend Signal Activated!\n\nProduct: ${pid}\nStore: ${storeId}\nMultiplier: ${score}x\nTarget: ${segment}\n\nRecommendations updated on customer storefront.`);
+            loadAnalytics(storeId);
+        }
+
+        async function submitBoost(e) {
+            e.preventDefault();
+            const storeId = document.getElementById('store-select').value;
+            const pid = document.getElementById('boost-pid').value;
+            const pct = parseFloat(document.getElementById('boost-pct').value);
+            const segment = document.getElementById('boost-segment').value;
+
+            const res = await fetch('/api/merchant/rules', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    store_id: storeId,
+                    product_id: pid,
+                    boost_percent: pct,
+                    target_segment: segment
+                })
+            });
+            const data = await res.json();
+            alert(`Merchant Boost Activated!\n\nProduct: ${pid}\nStore: ${storeId}\nBoost: +${pct}%\nTarget: ${segment}\n\nPromotional priority rule applied.`);
+            loadAnalytics(storeId);
+        }
+    </script>
+</body>
+</html>

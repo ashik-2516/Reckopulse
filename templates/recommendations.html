@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Product Recommendations</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />
+    <link href="../static/css/style.css" rel="stylesheet" />
+    <style>
+        .recommendation-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .recommendation-score {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            background-color: #2D99CC;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .recommendation-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .recommendation-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            margin-right: 5px;
+        }
+        
+        .recommendation-tab.active {
+            border-color: #ddd;
+            background-color: #fff;
+            border-bottom-color: #fff;
+            margin-bottom: -1px;
+        }
+        
+        .recommendation-section {
+            display: none;
+        }
+        
+        .recommendation-section.active {
+            display: block;
+        }
+        
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .category-section {
+            margin-bottom: 30px;
+        }
+        
+        .category-title {
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tm-btn-back {
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top box -->
+        <!-- Logo & Site Name -->
+        <div class="placeholder">
+            <div class="parallax-window" data-parallax="scroll" data-image-src="../static/img/t2.jpg">
+                <div class="tm-header">
+                    <div class="row tm-header-inner">
+                        <div class="col-md-6 col-12">
+                            <img src="../static/img/cart.png" alt="Logo" class="tm-site-logo" />
+                            <div class="tm-site-text-box">
+                                <h1 class="tm-site-title">Product Recommendations</h1>
+                                <h6 class="tm-site-description">Detailed recommendations for your selection</h6>
+                            </div>
+                        </div>
+                        <nav class="col-md-6 col-12 tm-nav">
+                            <ul class="tm-nav-ul">
+                                <li class="tm-nav-li"><a href="/index" class="tm-nav-link">Home</a></li>
+                                <li class="tm-nav-li"><a href="/about" class="tm-nav-link">About</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            <div class="tm-container-inner">
+                <button class="tm-btn tm-btn-primary tm-btn-back" onclick="window.location.href='/index'">
+                    &larr; Back to Products
+                </button>
+                
+                <h2 class="tm-section-title" id="product-title">Loading Recommendations...</h2>
+                <p class="tm-mb-p" id="product-description">Finding the best products based on your selection.</p>
+                
+                <div class="recommendation-tabs">
+                    <div class="recommendation-tab active" data-tab="main">Main Recommendations</div>
+                    <div class="recommendation-tab" data-tab="complementary">Complementary Products</div>
+                    <div class="recommendation-tab" data-tab="categorized">By Category</div>
+                </div>
+                
+                <div class="recommendation-sections">
+                    <!-- Main Recommendations Section -->
+                    <div class="recommendation-section active" id="main-section">
+                        <div class="loading">Loading recommendations...</div>
+                        <div class="recommendation-grid" id="main-recommendations"></div>
+                    </div>
+                    
+                    <!-- Complementary Products Section -->
+                    <div class="recommendation-section" id="complementary-section">
+                        <div class="loading">Loading complementary products...</div>
+                        <div class="recommendation-grid" id="complementary-recommendations"></div>
+                    </div>
+                    
+                    <!-- Categorized Recommendations Section -->
+                    <div class="recommendation-section" id="categorized-section">
+                        <div class="loading">Loading categorized recommendations...</div>
+                        <div id="categorized-recommendations"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="tm-footer text-center">
+            <p>Made with &#10084;&#65039; by BATCH-19</p>
+        </footer>
+    </div>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/parallax.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Get product name from URL
+            const urlParts = window.location.pathname.split('/');
+            const product = urlParts[urlParts.length - 1];
+            
+            // Update page title
+            $('#product-title').text('Recommendations for ' + decodeURIComponent(product));
+            
+            // Fetch recommendations
+            fetchRecommendations(product);
+            
+            // Tab switching
+            $('.recommendation-tab').click(function() {
+                const tabId = $(this).data('tab');
+                
+                // Update active tab
+                $('.recommendation-tab').removeClass('active');
+                $(this).addClass('active');
+                
+                // Show relevant section
+                $('.recommendation-section').removeClass('active');
+                $('#' + tabId + '-section').addClass('active');
+            });
+        });
+        
+        function fetchRecommendations(product) {
+            // Make API call to get recommendations
+            fetch(`/api/recommendations/${product}?n=10`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Remove loading indicators
+                        $('.loading').hide();
+                        
+                        // Populate main recommendations
+                        populateMainRecommendations(data.main_recommendations);
+                        
+                        // Populate complementary products
+                        if (data.complementary_products) {
+                            populateComplementaryRecommendations(data.complementary_products);
+                        }
+                        
+                        // Populate categorized recommendations
+                        if (data.categorized_recommendations) {
+                            populateCategorizedRecommendations(data.categorized_recommendations);
+                        }
+                    } else {
+                        // Show error
+                        $('.loading').text('Error loading recommendations: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching recommendations:', error);
+                    $('.loading').text('Error loading recommendations. Please try again later.');
+                });
+        }
+        
+        function populateMainRecommendations(recommendations) {
+            const container = $('#main-recommendations');
+            
+            if (recommendations.length === 0) {
+                container.html('<p>No recommendations available.</p>');
+                return;
+            }
+            
+            recommendations.forEach(rec => {
+                const scorePercentage = (rec.score * 100).toFixed(1);
+                const card = $(`
+                    <div class="recommendation-card">
+                        <h3>${rec.product}
+                            <span class="recommendation-score">${scorePercentage}%</span>
+                        </h3>
+                        <p>Category: ${rec.category || 'N/A'}</p>
+                        <a href="/index/${encodeURIComponent(rec.product)}" class="tm-btn tm-btn-success">View Product</a>
+                    </div>
+                `);
+                container.append(card);
+            });
+        }
+        
+        function populateComplementaryRecommendations(recommendations) {
+            const container = $('#complementary-recommendations');
+            
+            if (recommendations.length === 0) {
+                container.html('<p>No complementary products available.</p>');
+                return;
+            }
+            
+            recommendations.forEach(rec => {
+                const scorePercentage = (rec.complementary_score * 100).toFixed(1);
+                const card = $(`
+                    <div class="recommendation-card">
+                        <h3>${rec.product}
+                            <span class="recommendation-score">${scorePercentage}%</span>
+                        </h3>
+                        <p>Category: ${rec.category || 'N/A'}</p>
+                        <a href="/index/${encodeURIComponent(rec.product)}" class="tm-btn tm-btn-success">View Product</a>
+                    </div>
+                `);
+                container.append(card);
+            });
+        }
+        
+        function populateCategorizedRecommendations(categorizedRecs) {
+            const container = $('#categorized-recommendations');
+            
+            if (Object.keys(categorizedRecs).length === 0) {
+                container.html('<p>No categorized recommendations available.</p>');
+                return;
+            }
+            
+            // Process each category
+            for (const [category, recommendations] of Object.entries(categorizedRecs)) {
+                if (recommendations.length === 0) continue;
+                
+                // Create category section
+                const categorySection = $(`
+                    <div class="category-section">
+                        <h3 class="category-title">${formatCategoryName(category)}</h3>
+                        <div class="recommendation-grid"></div>
+                    </div>
+                `);
+                
+                const grid = categorySection.find('.recommendation-grid');
+                
+                // Add recommendations to this category
+                recommendations.forEach(rec => {
+                    const scorePercentage = (rec.score * 100).toFixed(1);
+                    const card = $(`
+                        <div class="recommendation-card">
+                            <h3>${rec.product}
+                                <span class="recommendation-score">${scorePercentage}%</span>
+                            </h3>
+                            <a href="/index/${encodeURIComponent(rec.product)}" class="tm-btn tm-btn-success">View Product</a>
+                        </div>
+                    `);
+                    grid.append(card);
+                });
+                
+                container.append(categorySection);
+            }
+        }
+        
+        function formatCategoryName(category) {
+            // Convert snake_case or category names to Title Case
+            return category
+                .replace(/_/g, ' ')
+                .replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+        }
+    </script>
+</body>
+
+</html>

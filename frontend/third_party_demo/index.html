@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecoPulse SDK — Standalone Third-Party Integration Demo</title>
+    <link rel="icon" type="image/svg+xml" href="/frontend/shared/favicons/favicon-recopulse.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/shared/css/store.css">
+    <style>
+        .demo-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        .code-snippet {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <img src="/frontend/shared/favicons/favicon-recopulse.svg" width="32" height="32" alt="RecoPulse Logo" />
+                <span>RecoPulse Developer SDK</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Platform Home</a></li>
+                <li><a href="/store/clothing" class="nav-link">Storefronts</a></li>
+                <li><a href="/merchant/dashboard" class="nav-link">Merchant Console</a></li>
+                <li><a href="/demo/external" class="nav-link active">Developer SDK</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero-banner" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+        <h1>RecoPulse Developer SDK</h1>
+        <p>Enterprise-style recommendation intelligence without enterprise-level complexity.</p>
+    </header>
+
+    <main class="main-container">
+        <div class="demo-box">
+            <h2 style="font-size: 1.3rem; font-weight: 700;">Zero-Dependency 1-Line JavaScript Integration</h2>
+            <p style="color: #475569; margin-top: 0.5rem;">
+                Demonstrating how an independent external website embeds RecoPulse recommendations with just one script tag without building custom recommendation infrastructure from scratch.
+            </p>
+
+            <div class="code-snippet">
+&lt;script src="http://127.0.0.1:5000/sdk/reco-sdk.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    RecoEngine.init({ storeId: 'aura_threads' });
+    
+    // Automatically fetches and renders dynamic personalized recommendations
+    RecoEngine.renderWidget('recommendation-widget', {
+        title: 'Personalized For You',
+        limit: 4
+    });
+&lt;/script&gt;
+            </div>
+        </div>
+
+        <!-- Embedded Live Widget Demonstration -->
+        <section class="demo-box">
+            <div class="section-title">
+                <span>Live Embedded RecoPulse Widget</span>
+                <span style="font-size: 0.85rem; font-weight: 500; color: #64748b;">Rendered dynamically via RecoEngine.renderWidget()</span>
+            </div>
+            <div id="recommendation-widget"></div>
+        </section>
+    </main>
+
+    <footer class="tm-footer text-center" style="background: white; border-top: 1px solid #e2e8f0; padding: 2rem 0; margin-top: 3rem;">
+        <p style="color: #64748b; font-size: 0.9rem;">
+            <strong>RecoPulse Developer SDK</strong> — <em>Intelligent Recommendations. Built for Every Store.</em>
+        </p>
+    </footer>
+
+    <script src="/sdk/reco-sdk.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            RecoEngine.init({ storeId: 'aura_threads' });
+            await RecoEngine.renderWidget('recommendation-widget', {
+                storeId: 'aura_threads',
+                title: 'Live SDK Recommendation Feed',
+                limit: 4
+            });
+        });
+    </script>
+</body>
+</html>

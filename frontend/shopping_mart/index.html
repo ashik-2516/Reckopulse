@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshPantry Superstore — Organic Grocery & Fresh Milk</title>
+    <link rel="icon" type="image/svg+xml" href="/frontend/shared/favicons/favicon-pantry.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/shared/css/storefront_core.css?v=4.0">
+    <script src="/frontend/shared/js/theme_engine.js"></script>
+</head>
+<body>
+    <!-- Top Announcement Bar -->
+    <div class="top-announcement-bar" style="background:#064e3b; color:#a7f3d0;">
+        <span>Fresh Farm Milk Delivered Daily to Your Doorstep</span>
+        <a href="/merchant/dashboard" style="color:#6ee7b7;">Merchant Portal →</a>
+    </div>
+
+    <!-- Commercial Header -->
+    <header class="store-header">
+        <div class="header-container">
+            <a href="/store/grocery" class="brand-logo">
+                <img src="/frontend/shared/favicons/favicon-pantry.svg" width="28" height="28" alt="Pantry Logo" />
+                <span style="color:#064e3b;">FreshPantry Superstore</span>
+            </a>
+            
+            <div class="header-search-bar" style="position:relative;">
+                <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:#64748b; pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" id="search-input" class="search-input" placeholder="Search fresh milk, organic eggs, olive oil, oats, honey..." autocomplete="off" style="padding-left:2.5rem;" />
+            </div>
+
+            <div class="header-actions">
+                <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
+                <a href="/" class="action-btn">Platform Home</a>
+                <a href="#" class="action-btn" onclick="event.preventDefault(); app.openWishlistModal();">
+                    Wishlist <span id="wishlist-badge-count" class="badge-count">0</span>
+                </a>
+                <button class="action-btn" onclick="app.toggleCartDrawer(true)" style="background:#eff6ff; color:#2563eb;">
+                    Cart <span id="cart-badge-count" class="badge-count">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grocery Category Navigation Bar -->
+        <nav class="category-nav-bar">
+            <div class="category-nav-container">
+                <span class="cat-pill active" data-cat="all" onclick="app.setCategoryFilter('all')">All Supermarket</span>
+                <span class="cat-pill" data-cat="dairy" onclick="app.setCategoryFilter('dairy')">Dairy & Eggs</span>
+                <span class="cat-pill" data-cat="staples" onclick="app.setCategoryFilter('staples')">Pantry Staples</span>
+                <span class="cat-pill" data-cat="oil" onclick="app.setCategoryFilter('oil')">Cold-Pressed Oils</span>
+                <span class="cat-pill" data-cat="breakfast" onclick="app.setCategoryFilter('breakfast')">Breakfast & Oats</span>
+                <span class="cat-pill" data-cat="beverages" onclick="app.setCategoryFilter('beverages')">Organic Beverages</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Layout (Filters + Recommendations + Catalog) -->
+    <main class="main-layout">
+        <!-- Horizontal Personalized Recommendation Carousel -->
+        <div id="reco-shelf-personalized"></div>
+        <!-- Controlled Before vs After Recommendation Intelligence Comparison -->
+        <div id="recopulse-comparison-container"></div>
+
+        <!-- Horizontal Trending Recommendation Carousel -->
+        <div id="reco-shelf-trending"></div>
+
+        <div class="content-grid">
+            <!-- Sidebar Filters -->
+            <aside class="filter-sidebar">
+                <div class="filter-header">
+                    <span class="filter-title">Filter Products</span>
+                    <button class="btn-clear-filter" onclick="app.clearAllFilters()">Clear All</button>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Brand</span>
+                    <label class="filter-option"><input type="radio" name="brand" value="all" checked onclick="app.setBrandFilter('all')"> All Brands</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="FreshPantry Organic" onclick="app.setBrandFilter('FreshPantry Organic')"> FreshPantry Organic</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="Natures Choice" onclick="app.setBrandFilter('Natures Choice')"> Natures Choice</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="FarmFresh" onclick="app.setBrandFilter('FarmFresh')"> FarmFresh</label>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Price Range</span>
+                    <select id="price-filter-select" class="sort-select" style="width:100%;">
+                        <option value="all">All Prices</option>
+                        <option value="under200">Under ₹200</option>
+                        <option value="200-500">₹200 – ₹500</option>
+                        <option value="above500">Above ₹500</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Customer Rating</span>
+                    <select id="rating-filter-select" class="sort-select" style="width:100%;">
+                        <option value="all">All Ratings</option>
+                        <option value="4.5">4.5 & Above</option>
+                        <option value="4.0">4.0 & Above</option>
+                    </select>
+                </div>
+            </aside>
+
+            <!-- Catalog Products Section -->
+            <section class="catalog-section">
+                <div class="catalog-toolbar">
+                    <div id="results-count" class="results-count">Loading catalog...</div>
+                    <div class="toolbar-sort">
+                        <label for="sort-select" style="font-size: 0.825rem; font-weight: 600; color: #64748b;">Sort by:</label>
+                        <select id="sort-select" class="sort-select" onchange="app.setSortOrder(this.value)">
+                            <option value="relevance">Recommended (Default)</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="catalog-grid" class="catalog-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Slide-over Shopping Cart Drawer -->
+    <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="app.toggleCartDrawer(false)"></div>
+    <aside id="cart-drawer" class="cart-drawer">
+        <div class="cart-drawer-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-weight: 800; font-size: 1.1rem; color: #0f172a;">Your Shopping Cart</span>
+                <span id="cart-drawer-item-count" class="badge-count">0</span>
+            </div>
+            <button class="modal-close-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">Close</button>
+        </div>
+        <div id="cart-drawer-body" class="cart-drawer-body"></div>
+        <div class="cart-drawer-footer">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span style="font-weight: 600; color: #64748b;">Subtotal:</span>
+                <span id="cart-drawer-total" style="font-weight: 800; font-size: 1.2rem; color: #0f172a;">₹0</span>
+            </div>
+            <button class="btn-checkout" onclick="app.openCheckoutModal()">Proceed to Demo Checkout →</button>
+        </div>
+    </aside>
+
+    <!-- Product Detail & Why This Modal Overlay -->
+    <div id="product-modal-overlay" class="modal-overlay" onclick="if(event.target === this) app.closeProductModal()">
+        <div id="product-modal-card" class="product-modal-card"></div>
+    </div>
+
+    <!-- Live RecoPulse Evaluator Tooling Floating Bar -->
+    <div id="evaluator-floating-bar"></div>
+
+    <script src="/sdk/recopulse.js"></script>
+    <script src="/frontend/shared/js/storefront_app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new RecoPulseStorefrontApp({ storeId: 'fresh_pantry' });
+        });
+    </script>
+</body>
+</html>

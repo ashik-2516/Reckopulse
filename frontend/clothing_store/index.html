@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Threads — Premium Fashion & Apparel</title>
+    <link rel="icon" type="image/svg+xml" href="/frontend/shared/favicons/favicon-aura.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/shared/css/storefront_core.css?v=5.0">
+</head>
+<body>
+    <!-- Top Announcement Bar -->
+    <div class="top-announcement-bar">
+        <span>Free standard shipping on all apparel orders over ₹999</span>
+        <a href="/merchant/dashboard">Merchant Portal →</a>
+    </div>
+
+    <!-- Commercial Header -->
+    <header class="store-header">
+        <div class="header-container">
+            <a href="/store/clothing" class="brand-logo">
+                <img src="/frontend/shared/favicons/favicon-aura.svg" width="28" height="28" alt="Aura Logo" />
+                <span>Aura Threads</span>
+            </a>
+            
+            <div class="header-search-bar" style="position:relative;">
+                <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:#64748b; pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" id="search-input" class="search-input" placeholder="Search hoodies, denim jackets, sneakers, chinos..." autocomplete="off" style="padding-left:2.5rem;" />
+            </div>
+
+            <div class="header-actions">
+                <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
+                <a href="/" class="action-btn">Platform Home</a>
+                <a href="#" class="action-btn" onclick="event.preventDefault(); app.openWishlistModal();">
+                    Wishlist <span id="wishlist-badge-count" class="badge-count">0</span>
+                </a>
+                <button class="action-btn" onclick="app.toggleCartDrawer(true)" style="background:#eff6ff; color:#2563eb;">
+                    Cart <span id="cart-badge-count" class="badge-count">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Fashion Category Pills Bar -->
+        <nav class="category-nav-bar">
+            <div class="category-nav-container">
+                <span class="cat-pill active" data-cat="all" onclick="app.setCategoryFilter('all')">All Apparel</span>
+                <span class="cat-pill" data-cat="outerwear" onclick="app.setCategoryFilter('outerwear')">Outerwear</span>
+                <span class="cat-pill" data-cat="bottoms" onclick="app.setCategoryFilter('bottoms')">Bottoms & Chinos</span>
+                <span class="cat-pill" data-cat="footwear" onclick="app.setCategoryFilter('footwear')">Footwear</span>
+                <span class="cat-pill" data-cat="shirts" onclick="app.setCategoryFilter('shirts')">Linen Shirts</span>
+                <span class="cat-pill" data-cat="accessories" onclick="app.setCategoryFilter('accessories')">Bags & Beanies</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Layout (Filters + Recommendations + Catalog) -->
+    <main class="main-layout">
+        <!-- Horizontal Personalized Recommendation Carousel -->
+        <div id="reco-shelf-personalized"></div>
+        <!-- Controlled Before vs After Recommendation Intelligence Comparison -->
+        <div id="recopulse-comparison-container"></div>
+
+        <!-- Horizontal Trending Recommendation Carousel -->
+        <div id="reco-shelf-trending"></div>
+
+        <div class="content-grid">
+            <!-- Sidebar Filters -->
+            <aside class="filter-sidebar">
+                <div class="filter-header">
+                    <span class="filter-title">Filter Products</span>
+                    <button class="btn-clear-filter" onclick="app.clearAllFilters()">Clear All</button>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Brand</span>
+                    <label class="filter-option"><input type="radio" name="brand" value="all" checked onclick="app.setBrandFilter('all')"> All Brands</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="Aura Basics" onclick="app.setBrandFilter('Aura Basics')"> Aura Basics</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="Aura Studio" onclick="app.setBrandFilter('Aura Studio')"> Aura Studio</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="Denim Lab" onclick="app.setBrandFilter('Denim Lab')"> Denim Lab</label>
+                    <label class="filter-option"><input type="radio" name="brand" value="Sole Craft" onclick="app.setBrandFilter('Sole Craft')"> Sole Craft</label>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Price Range</span>
+                    <select id="price-filter-select" class="sort-select" style="width:100%;">
+                        <option value="all">All Prices</option>
+                        <option value="under1000">Under ₹1,000</option>
+                        <option value="1000to3000">₹1,000 to ₹3,000</option>
+                        <option value="over3000">Over ₹3,000</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Customer Rating</span>
+                    <select id="rating-filter-select" class="sort-select" style="width:100%;">
+                        <option value="0">All Ratings</option>
+                        <option value="4.8">4.8 & Above</option>
+                        <option value="4.6">4.6 & Above</option>
+                    </select>
+                </div>
+            </aside>
+
+            <!-- Main Catalog Column -->
+            <section>
+                <div class="catalog-toolbar">
+                    <span id="results-count" class="results-count">Showing items</span>
+                    <div>
+                        <label for="sort-select" style="font-size:0.85rem; color:#64748b; margin-right:0.35rem;">Sort By:</label>
+                        <select id="sort-select" class="sort-select">
+                            <option value="relevance">Relevance</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                            <option value="rating">Customer Rating</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="catalog-grid" class="product-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Slide-Out Shopping Cart Drawer -->
+    <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="app.toggleCartDrawer(false)"></div>
+    <aside id="cart-drawer" class="cart-drawer">
+        <div class="cart-drawer-header">
+            <span class="cart-drawer-title">Shopping Cart</span>
+            <button class="close-drawer-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">Close</button>
+        </div>
+        <div id="cart-drawer-body" class="cart-drawer-body"></div>
+        <div class="cart-drawer-footer">
+            <div class="cart-subtotal-row">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal-val">₹0</span>
+
+            </div>
+            <button class="btn-checkout" onclick="app.openCheckoutModal()">Proceed to Demo Checkout</button>
+        </div>
+    </aside>
+
+    <!-- Product Detail & Checkout Modal -->
+    <div id="product-modal-overlay" class="modal-overlay" onclick="if(event.target===this) app.closeProductModal()">
+        <div id="product-modal-card" class="modal-card"></div>
+    </div>
+
+    <!-- Floating Evaluator Control Toolbar -->
+    <div class="demo-evaluator-toolbar">
+        <div class="eval-left">
+            <span><strong>RecoPulse Evaluator Tooling:</strong></span>
+            <label for="persona-select">Persona:</label>
+            <select id="persona-select" class="eval-select" onchange="switchPersona(this.value)">
+                <option value="new">1. New Visitor (Cold-Start)</option>
+                <option value="active">2. Active Shopper</option>
+                <option value="returning">3. Returning Customer</option>
+                <option value="churn_risk">4. Likely-Churn Risk</option>
+            </select>
+        </div>
+        <div>
+            <button class="eval-btn" style="background:#8b5cf6;" onclick="app.runLiveCustomerJourney()">▶ Demo Mode: Live Journey</button>
+            <button class="eval-btn" onclick="activateTrendSignal()">Inject Trend Signal (CLOTH-108)</button>
+            <button class="eval-btn eval-btn-secondary" onclick="app.replayOnboarding()">Replay Tour</button>
+            <button class="eval-btn eval-btn-secondary" onclick="resetSession()">Reset Session</button>
+        </div>
+
+    </div>
+
+    <script src="/sdk/reco-sdk.js?v=6.0"></script>
+    <script src="/frontend/shared/js/storefront_app.js?v=6.0"></script>
+    <script>
+        const app = new StorefrontApp({ storeId: 'aura_threads' });
+
+        async function switchPersona(persona) {
+            RecoEngine.setPersona(persona);
+            await fetch('/api/merchant/invalidate-cache', { method: 'POST' });
+            await app.loadAllCarousels();
+            await app.loadComparisonSection();
+            app.showToast(`Persona updated to: ${persona}`);
+        }
+
+        async function resetSession() {
+            localStorage.removeItem('recopulse_visitor_id');
+            sessionStorage.removeItem('recopulse_session_id');
+            localStorage.removeItem('reco_user_persona');
+            localStorage.removeItem('reco_cart_aura_threads');
+            localStorage.removeItem('reco_wishlist_aura_threads');
+            RecoEngine.newShopper();
+            app.cart = [];
+            app.wishlist = new Set();
+            app.renderCartUI();
+            app.renderWishlistCount();
+            await app.loadAllCarousels();
+            await app.loadComparisonSection();
+            app.showToast('Session & Shopper Reset — Fresh Cold-Start State');
+        }
+
+        async function activateTrendSignal() {
+            await fetch('/api/merchant/trends', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    store_id: 'aura_threads',
+                    product_id: 'CLOTH-108',
+                    trend_score: 4.0,
+                    target_segments: ['active']
+                })
+            });
+            app.showToast('Trend Signal Activated for Joggers (CLOTH-108)!');
+            await app.loadAllCarousels();
+            await app.loadComparisonSection();
+        }
+    </script>
+</body>
+</html>
