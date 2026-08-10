@@ -30,7 +30,6 @@
             </div>
 
             <div class="header-actions">
-                <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
                 <a href="/" class="action-btn">Platform Home</a>
                 <a href="#" class="action-btn" onclick="event.preventDefault(); app.openWishlistModal();">
                     Wishlist <span id="wishlist-badge-count" class="badge-count">0</span>
@@ -128,7 +127,7 @@
                 <span style="font-weight: 800; font-size: 1.1rem; color: #0f172a;">Your Shopping Cart</span>
                 <span id="cart-drawer-item-count" class="badge-count">0</span>
             </div>
-            <button class="modal-close-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">Close</button>
+            <button class="modal-close-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">✕</button>
         </div>
         <div id="cart-drawer-body" class="cart-drawer-body"></div>
         <div class="cart-drawer-footer">
@@ -148,11 +147,11 @@
     <!-- Live RecoPulse Evaluator Tooling Floating Bar -->
     <div id="evaluator-floating-bar"></div>
 
-    <script src="/sdk/recopulse.js"></script>
-    <script src="/frontend/shared/js/storefront_app.js"></script>
+    <script src="/sdk/reco-sdk.js?v=6.0"></script>
+    <script src="/frontend/shared/js/storefront_app.js?v=6.0"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            window.app = new RecoPulseStorefrontApp({ storeId: 'fresh_pantry' });
+            window.app = new StorefrontApp({ storeId: 'fresh_pantry' });
         });
     </script>
 </body>

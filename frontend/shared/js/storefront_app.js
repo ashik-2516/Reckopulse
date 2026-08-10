@@ -445,8 +445,8 @@ class StorefrontApp {
                 <div class="card-img-wrapper" onclick="app.openProductModal('${p.product_id}')">
                     <img src="${p.image_url}" alt="${p.title}" class="card-img" width="200" height="200" loading="lazy" onerror="this.onerror=null; this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
                     <span class="card-badge">${p.subcategory}</span>
-                    <button class="wishlist-btn ${isWish ? 'active' : ''}" aria-label="Add ${p.title} to wishlist" onclick="event.stopPropagation(); app.toggleWishlist('${p.product_id}')">
-                        ${isWish ? 'Saved' : 'Save'}
+                    <button class="wishlist-btn ${isWish ? 'active' : ''}" aria-label="Add ${p.title} to wishlist" title="${isWish ? 'Remove from Wishlist' : 'Add to Wishlist'}" onclick="event.stopPropagation(); app.toggleWishlist('${p.product_id}')">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="${isWish ? '#ef4444' : 'none'}" stroke="${isWish ? '#ef4444' : '#64748b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     </button>
                 </div>
                 <div class="card-content" style="padding:0.75rem; display:flex; flex-direction:column; gap:0.35rem;">
@@ -720,21 +720,38 @@ class StorefrontApp {
     }
 
     // Shopping Cart Drawer Functions
-    addToCart(productId) {
+    addToCart(productId, variantOptions = null) {
         const product = this.catalog.find(p => p.product_id === productId);
         if (!product) return;
 
-        const existing = this.cart.find(item => item.product_id === productId);
+        let cartItemTitle = product.title;
+        let cartItemPrice = product.price;
+
+        if (variantOptions && variantOptions.name && variantOptions.name !== 'Standard') {
+            cartItemTitle = `${product.title} (${variantOptions.name})`;
+            cartItemPrice = Math.round(product.price * (variantOptions.multiplier || 1.0));
+        }
+
+        const cartItemId = variantOptions && variantOptions.name !== 'Standard' ? `${productId}_${variantOptions.name.replace(/\s+/g, '_')}` : productId;
+
+        const existing = this.cart.find(item => item.cart_item_id === cartItemId || item.product_id === cartItemId);
         if (existing) {
             existing.qty += 1;
         } else {
-            this.cart.push({ ...product, qty: 1 });
+            this.cart.push({ 
+                ...product, 
+                product_id: productId, 
+                cart_item_id: cartItemId,
+                title: cartItemTitle, 
+                price: cartItemPrice, 
+                qty: 1 
+            });
         }
 
         this.saveCart();
         this.renderCartUI();
         this.toggleCartDrawer(true);
-        this.showToast(`Added '${product.title}' to cart!`);
+        this.showToast(`Added '${cartItemTitle}' to cart!`);
 
         // RecoPulse Event Sync
         if (window.RecoEngine) {
@@ -860,7 +877,7 @@ class StorefrontApp {
         let finalTotal = Math.max(0, total - discount);
 
         body.innerHTML = `
-            <button class="modal-close-btn" onclick="app.closeProductModal()">Close</button>
+            <button class="modal-close-btn" onclick="app.closeProductModal()" aria-label="Close Modal" title="Close">✕</button>
             <div style="grid-column: 1 / -1;">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Demo Checkout — Order Confirmation</h2>
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">This is a demonstration checkout flow. No real payment or sensitive data will be collected.</p>
@@ -961,7 +978,7 @@ class StorefrontApp {
         const wishItems = this.catalog.filter(p => this.wishlist.has(p.product_id));
 
         body.innerHTML = `
-            <button class="modal-close-btn" onclick="app.closeProductModal()">Close</button>
+            <button class="modal-close-btn" onclick="app.closeProductModal()" aria-label="Close Modal" title="Close">✕</button>
             <div style="grid-column: 1 / -1;">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Saved Wishlist Items (${wishItems.length})</h2>
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">Products you saved for future consideration.</p>
@@ -996,17 +1013,20 @@ class StorefrontApp {
         if (el) el.innerText = this.wishlist.size;
     }
 
-    // Product Detail Modal
+    // Product Detail Modal with Interactive Variant Selection
     openProductModal(productId) {
         const p = this.catalog.find(item => item.product_id === productId);
         if (!p) return;
+
+        this.activeModalProduct = p;
+        this.selectedVariant = { name: 'Standard', multiplier: 1.0 };
 
         const modal = document.getElementById('product-modal-overlay');
         const body = document.getElementById('product-modal-card');
         if (!modal || !body) return;
 
         body.innerHTML = `
-            <button class="modal-close-btn" onclick="app.closeProductModal()">Close</button>
+            <button class="modal-close-btn" onclick="app.closeProductModal()" aria-label="Close Modal" title="Close">✕</button>
             <div>
                 <img src="${p.image_url}" alt="${p.title}" class="modal-img" onerror="this.onerror=null; this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
             </div>
@@ -1014,21 +1034,21 @@ class StorefrontApp {
                 <div class="card-brand">${p.brand}</div>
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">${p.title}</h2>
                 <div class="card-rating" style="margin-bottom:0.75rem;"> <span>${p.rating}</span></div>
-                <div style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem;">₹${Math.round(p.price).toLocaleString('en-IN')}</div>
+                <div id="modal-product-price" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem;">₹${Math.round(p.price).toLocaleString('en-IN')}</div>
 
                 <p style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; line-height: 1.4;">${p.description}</p>
                 
                 <div style="margin-bottom: 1rem;">
                     <label style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Select Option / Variant:</label>
-                    <div class="variant-selector">
-                        <button class="variant-btn active">Standard</button>
-                        <button class="variant-btn">Pack of 2</button>
-                        <button class="variant-btn">Premium</button>
+                    <div class="variant-selector" id="modal-variant-selector">
+                        <button class="variant-btn active" onclick="app.selectModalVariant('Standard', 1.0, this)">Standard</button>
+                        <button class="variant-btn" onclick="app.selectModalVariant('Pack of 2', 1.8, this)">Pack of 2</button>
+                        <button class="variant-btn" onclick="app.selectModalVariant('Premium', 1.25, this)">Premium</button>
                     </div>
                 </div>
 
                 <div style="display:flex; gap:0.75rem;">
-                    <button class="btn-checkout" onclick="app.addToCart('${p.product_id}'); app.closeProductModal();">Add To Shopping Cart</button>
+                    <button class="btn-checkout" onclick="app.addModalVariantToCart()">Add To Shopping Cart</button>
                 </div>
             </div>
         `;
@@ -1040,6 +1060,29 @@ class StorefrontApp {
             RecoEngine.trackEvent('view', productId);
             this.loadAllCarousels();
         }
+    }
+
+    selectModalVariant(variantName, multiplier, btnEl) {
+        if (!this.activeModalProduct) return;
+        this.selectedVariant = { name: variantName, multiplier: multiplier };
+
+        const container = document.getElementById('modal-variant-selector');
+        if (container) {
+            container.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('active'));
+        }
+        if (btnEl) btnEl.classList.add('active');
+
+        const newPrice = Math.round(this.activeModalProduct.price * multiplier);
+        const priceEl = document.getElementById('modal-product-price');
+        if (priceEl) {
+            priceEl.innerText = `₹${newPrice.toLocaleString('en-IN')}`;
+        }
+    }
+
+    addModalVariantToCart() {
+        if (!this.activeModalProduct) return;
+        this.addToCart(this.activeModalProduct.product_id, this.selectedVariant);
+        this.closeProductModal();
     }
 
     // Interactive Recommendation Explanation Modal ("Why this?")
@@ -1061,7 +1104,7 @@ class StorefrontApp {
         }
 
         body.innerHTML = `
-            <button class="modal-close-btn" onclick="app.closeProductModal()">Close</button>
+            <button class="modal-close-btn" onclick="app.closeProductModal()" aria-label="Close Modal" title="Close">✕</button>
             <div style="grid-column: 1 / -1; padding: 0.5rem;">
                 <div style="font-size:0.75rem; font-weight:700; color:#2563eb; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.35rem;">Recommendation Explanation</div>
                 <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">Why was "${p.title}" recommended for you?</h3>
@@ -1433,4 +1476,5 @@ class StorefrontApp {
     }
 }
 
-
+window.StorefrontApp = StorefrontApp;
+window.RecoPulseStorefrontApp = StorefrontApp;

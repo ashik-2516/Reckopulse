@@ -270,6 +270,34 @@
             border-color: var(--border-hover);
         }
 
+        .theme-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.85rem;
+            height: 36px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle-btn svg {
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+        }
+
         /* Restrained 3D Hero Canvas Stage */
         .stage-3d-wrap {
             perspective: 1200px;
@@ -367,7 +395,6 @@
             </ul>
 
             <div class="nav-right-actions">
-                <button class="theme-toggle-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Theme"></button>
                 <a href="/store/clothing" class="btn-nav-primary">Explore RecoPulse →</a>
             </div>
         </div>
@@ -483,35 +510,35 @@
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.75rem; overflow: hidden;">
-                <img src="/static/assets/catalog/cloth_101.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Apparel" />
+                <img src="/frontend/shared/images/products/CLOTH-101.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Apparel" />
                 <div style="padding: 1rem;">
                     <div class="mono" style="font-size: 0.7rem; color: var(--text-secondary);">AURA THREADS</div>
-                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Urban Oversized Denim Jacket</div>
-                    <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹2,299</div>
+                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Minimalist Organic Cotton Hoodie</div>
+                    <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹1,499</div>
                 </div>
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.75rem; overflow: hidden;">
-                <img src="/static/assets/catalog/elec_201.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Electronics" />
+                <img src="/frontend/shared/images/products/NEX-201.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Electronics" />
                 <div style="padding: 1rem;">
                     <div class="mono" style="font-size: 0.7rem; color: var(--text-secondary);">NEXUS MARKETPLACE</div>
-                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Pro Wireless ANC Headphones</div>
+                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Pro ANC Headphones</div>
                     <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹4,999</div>
                 </div>
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.75rem; overflow: hidden;">
-                <img src="/static/assets/catalog/groc_301.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Grocery" />
+                <img src="/frontend/shared/images/products/MART-301.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Grocery" />
                 <div style="padding: 1rem;">
                     <div class="mono" style="font-size: 0.7rem; color: var(--text-secondary);">FRESHPANTRY</div>
-                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Organic A2 Farm Whole Milk</div>
+                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Organic A2 Whole Milk 1L</div>
                     <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹95</div>
                 </div>
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.75rem; overflow: hidden;">
-                <img src="/static/assets/catalog/pickle_401.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Pickles" />
+                <img src="/frontend/shared/images/products/PICKLE-401.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Pickles" />
                 <div style="padding: 1rem;">
                     <div class="mono" style="font-size: 0.7rem; color: var(--text-secondary);">SAVORCRAFT</div>
-                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Avakaya Spicy Mango Pickle</div>
-                    <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹349</div>
+                    <div style="font-weight: 800; font-size: 0.95rem; margin: 0.2rem 0;">Avakaya Spicy Mango Pickle 500g</div>
+                    <div style="font-size: 1rem; font-weight: 800; color: var(--success);">₹299</div>
                 </div>
             </div>
         </div>
@@ -569,27 +596,47 @@
         <p class="section-desc">Test RecoPulse recommendation intelligence across apparel, tech gadgets, daily groceries, and artisanal pickles.</p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
-            <a href="/store/clothing" style="text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; padding: 1.5rem; transition: border-color 0.2s ease;">
-                <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 01</div>
-                <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0;">Aura Threads</h3>
-                <p style="font-size: 0.825rem; color: var(--text-secondary);">35 Apparel Items · Outerwear, Denim, Linen Shirts & Accessories.</p>
-            </a>
-            <a href="/store/general" style="text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; padding: 1.5rem; transition: border-color 0.2s ease;">
-                <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 02</div>
-                <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0;">Nexus Marketplace</h3>
-                <p style="font-size: 0.825rem; color: var(--text-secondary);">35 Tech Items · ANC Headphones, Mechanical Keyboards & Monitors.</p>
-            </a>
-            <a href="/store/grocery" style="text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; padding: 1.5rem; transition: border-color 0.2s ease;">
-                <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 03</div>
-                <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0;">FreshPantry</h3>
-                <p style="font-size: 0.825rem; color: var(--text-secondary);">35 Grocery Staples · Farm Milk, Organic Oils, Pulses & Spices.</p>
-            </a>
-            <a href="/store/pickles" style="text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; padding: 1.5rem; transition: border-color 0.2s ease;">
-                <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 04</div>
-                <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0;">SavorCraft Pickles</h3>
-                <p style="font-size: 0.825rem; color: var(--text-secondary);">30 Gourmet Items · Avakaya Mango, Gongura & Idli Podi Powders.</p>
-            </a>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="/frontend/shared/images/storefronts/aura_banner.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Aura Threads Apparel" />
+                <div style="padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1;">
+                    <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 01</div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0; color: var(--text-primary);">Aura Threads</h3>
+                    <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex-grow: 1;">35 Apparel Items · Outerwear, Denim, Linen Shirts & Accessories.</p>
+                    <a href="/store/clothing" class="btn-hero-main" style="display: inline-block; text-align: center; padding: 0.6rem 1rem; font-size: 0.825rem;">Explore Store →</a>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="/frontend/shared/images/storefronts/pantry_banner.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="Nexus Electronics" />
+                <div style="padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1;">
+                    <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 02</div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0; color: var(--text-primary);">Nexus Marketplace</h3>
+                    <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex-grow: 1;">35 Tech Items · ANC Headphones, Mechanical Keyboards & Monitors.</p>
+                    <a href="/store/general" class="btn-hero-main" style="display: inline-block; text-align: center; padding: 0.6rem 1rem; font-size: 0.825rem;">Explore Store →</a>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="/frontend/shared/images/storefronts/nexus_banner.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="FreshPantry Groceries" />
+                <div style="padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1;">
+                    <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 03</div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0; color: var(--text-primary);">FreshPantry</h3>
+                    <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex-grow: 1;">35 Grocery Staples · Farm Milk, Organic Oils, Pulses & Spices.</p>
+                    <a href="/store/grocery" class="btn-hero-main" style="display: inline-block; text-align: center; padding: 0.6rem 1rem; font-size: 0.825rem;">Explore Store →</a>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 0.85rem; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="/frontend/shared/images/products/PICKLE-401.jpg" style="width: 100%; height: 160px; object-fit: cover;" alt="SavorCraft Pickles" />
+                <div style="padding: 1.25rem; display: flex; flex-direction: column; flex-grow: 1;">
+                    <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--accent-light);">DOMAIN 04</div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0.35rem 0 0.5rem 0; color: var(--text-primary);">SavorCraft Pickles</h3>
+                    <p style="font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex-grow: 1;">30 Gourmet Items · Avakaya Mango, Gongura & Idli Podi Powders.</p>
+                    <a href="/store/pickles" class="btn-hero-main" style="display: inline-block; text-align: center; padding: 0.6rem 1rem; font-size: 0.825rem;">Explore Store →</a>
+                </div>
+            </div>
         </div>
+    </section>
     </section>
 
     <!-- SECTION 07: MERCHANT INTELLIGENCE -->

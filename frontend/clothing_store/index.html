@@ -29,7 +29,6 @@
             </div>
 
             <div class="header-actions">
-                <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
                 <a href="/" class="action-btn">Platform Home</a>
                 <a href="#" class="action-btn" onclick="event.preventDefault(); app.openWishlistModal();">
                     Wishlist <span id="wishlist-badge-count" class="badge-count">0</span>
@@ -125,7 +124,7 @@
     <aside id="cart-drawer" class="cart-drawer">
         <div class="cart-drawer-header">
             <span class="cart-drawer-title">Shopping Cart</span>
-            <button class="close-drawer-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">Close</button>
+            <button class="close-drawer-btn" onclick="app.toggleCartDrawer(false)" aria-label="Close Cart">✕</button>
         </div>
         <div id="cart-drawer-body" class="cart-drawer-body"></div>
         <div class="cart-drawer-footer">
