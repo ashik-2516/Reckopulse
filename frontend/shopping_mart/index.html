@@ -30,6 +30,31 @@
             </div>
 
             <div class="header-actions">
+                <div class="store-switcher-dropdown">
+                    <button class="store-switcher-btn" aria-label="Switch Storefront">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Switch Store</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="store-switcher-menu">
+                        <a href="/store/clothing" class="store-menu-item">
+                            <span class="store-dot" style="background:#8b5cf6;"></span>
+                            <div><strong>Aura Threads</strong><small>Apparel & Fashion</small></div>
+                        </a>
+                        <a href="/store/general" class="store-menu-item">
+                            <span class="store-dot" style="background:#2563eb;"></span>
+                            <div><strong>Nexus Marketplace</strong><small>Electronics & Tech</small></div>
+                        </a>
+                        <a href="/store/grocery" class="store-menu-item active">
+                            <span class="store-dot" style="background:#059669;"></span>
+                            <div><strong>FreshPantry</strong><small>Organic Groceries</small></div>
+                        </a>
+                        <a href="/store/pickles" class="store-menu-item">
+                            <span class="store-dot" style="background:#c2410c;"></span>
+                            <div><strong>SavorCraft Pickles</strong><small>Artisanal Foods</small></div>
+                        </a>
+                    </div>
+                </div>
                 <a href="/" class="action-btn">Platform Home</a>
                 <a href="#" class="action-btn" onclick="event.preventDefault(); app.openWishlistModal();">
                     Wishlist <span id="wishlist-badge-count" class="badge-count">0</span>
