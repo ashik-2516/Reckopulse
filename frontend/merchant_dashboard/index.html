@@ -243,8 +243,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const initialStore = document.getElementById('store-select').value || 'aura_threads';
-            loadAnalytics(initialStore);
+            const urlParams = new URLSearchParams(window.location.search);
+            const storeParam = urlParams.get('store');
+            const selectEl = document.getElementById('store-select');
+            
+            if (storeParam && selectEl) {
+                selectEl.value = storeParam;
+            }
+            
+            const selectedStore = selectEl ? selectEl.value : 'aura_threads';
+            loadAnalytics(selectedStore);
         });
 
         async function loadAnalytics(storeId) {

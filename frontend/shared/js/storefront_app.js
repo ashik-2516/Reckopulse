@@ -1506,7 +1506,24 @@ class StorefrontApp {
 
         const bar = document.getElementById('journey-controller-bar');
         if (bar) bar.remove();
-        this.showToast('Demo Journey Closed', 'info');
+
+        // Reset cart and wishlist so session is clean after demo completion
+        this.cart = [];
+        this.wishlist = [];
+        this.isCartAbandoned = false;
+        this.discountAmount = 0;
+        this.saveCart();
+        this.saveWishlist();
+        this.renderCartUI();
+        this.renderWishlistCount();
+
+        const banner = document.getElementById('cart-retention-banner');
+        if (banner) {
+            banner.innerHTML = '';
+            banner.remove();
+        }
+
+        this.showToast('Demo Journey Completed — Cart & Wishlist reset for clean session.', 'success');
     }
 
     renderRetentionBanner() {
