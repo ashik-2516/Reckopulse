@@ -1369,7 +1369,7 @@ class StorefrontApp {
             price: 1299,
             image_url: '/frontend/shared/favicons/favicon-recopulse.svg'
         };
-        const pid = sampleProduct.product_id;
+        const pid = sampleProduct.product_id || sampleProduct.id || 'ITEM-101';
 
         this.journeySteps = [
             {

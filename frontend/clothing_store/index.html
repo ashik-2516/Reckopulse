@@ -174,7 +174,9 @@
     <script src="/sdk/reco-sdk.js?v=6.0"></script>
     <script src="/frontend/shared/js/storefront_app.js?v=6.0"></script>
     <script>
-        const app = new StorefrontApp({ storeId: 'aura_threads' });
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new StorefrontApp({ storeId: 'aura_threads' });
+        });
 
         async function switchPersona(persona) {
             RecoEngine.setPersona(persona);

@@ -1417,22 +1417,22 @@ body {
 /* Floating Interactive Journey Controller Bar */
 .journey-controller-bar {
   position: fixed;
-  bottom: 1.25rem;
+  bottom: 80px !important;
   left: 50%;
   transform: translateX(-50%);
-  background: #090d16;
-  border: 1px solid #2563eb;
-  border-radius: 0.85rem;
-  padding: 0.75rem 1.25rem;
-  color: #ffffff;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  z-index: 4000;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  max-width: 92vw;
-  width: 640px;
-  box-sizing: border-box;
+  background: #090d16 !important;
+  border: 1.5px solid #3b82f6 !important;
+  border-radius: 0.85rem !important;
+  padding: 0.75rem 1.25rem !important;
+  color: #ffffff !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(59, 130, 246, 0.3) !important;
+  z-index: 25000 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  max-width: 92vw !important;
+  width: 640px !important;
+  box-sizing: border-box !important;
   animation: slideUpJourney 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
