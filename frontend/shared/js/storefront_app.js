@@ -13,9 +13,12 @@ class StorefrontApp {
         // Immediate Global Window Binding for 100% reliable click handling across all versions
         window.app = this;
         window.runLiveCustomerJourney = () => this.runLiveCustomerJourney();
+        window.stopJourney = () => this.stopJourney();
+        window.prevJourneyStep = () => this.prevJourneyStep();
+        window.nextJourneyStep = () => this.nextJourneyStep();
+        window.toggleJourneyPause = () => this.toggleJourneyPause();
         window.replayOnboarding = () => this.replayOnboarding();
         window.skipOnboarding = () => this.skipOnboarding();
-        window.nextOnboardingStep = () => this.nextOnboardingStep();
         window.switchPersona = (p) => this.switchPersona(p);
         window.activateTrendSignal = (id) => this.activateTrendSignal(id);
         window.resetSession = () => this.resetSession();
@@ -144,7 +147,7 @@ class StorefrontApp {
                 <div class="eval-left">
                     <span><strong>RecoPulse Evaluator Tooling:</strong></span>
                     <label for="persona-select">Persona:</label>
-                    <select id="persona-select" class="eval-select" onchange="window.switchPersona ? window.switchPersona(this.value) : (window.app && window.app.switchPersona && window.app.switchPersona(this.value))">
+                    <select id="persona-select" class="eval-select" onchange="window.switchPersona(this.value)">
                         <option value="new">1. New Visitor (Cold-Start)</option>
                         <option value="active">2. Active Shopper</option>
                         <option value="returning">3. Returning Customer</option>
@@ -152,10 +155,10 @@ class StorefrontApp {
                     </select>
                 </div>
                 <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
-                    <button class="eval-btn" style="background:#8b5cf6;" onclick="window.runLiveCustomerJourney ? window.runLiveCustomerJourney() : (window.app && window.app.runLiveCustomerJourney && window.app.runLiveCustomerJourney())">▶ Demo Mode: Live Journey</button>
-                    <button class="eval-btn" onclick="window.activateTrendSignal ? window.activateTrendSignal() : (window.app && window.app.activateTrendSignal && window.app.activateTrendSignal('${firstItem}'))">Inject Trend Signal</button>
-                    <button class="eval-btn eval-btn-secondary" onclick="window.replayOnboarding ? window.replayOnboarding() : (window.app && window.app.replayOnboarding && window.app.replayOnboarding())">Replay Tour</button>
-                    <button class="eval-btn eval-btn-secondary" onclick="window.resetSession ? window.resetSession() : (window.app && window.app.resetSession && window.app.resetSession())">Reset Session</button>
+                    <button class="eval-btn" style="background:#8b5cf6;" onclick="window.runLiveCustomerJourney()">▶ Demo Mode: Live Journey</button>
+                    <button class="eval-btn" onclick="window.activateTrendSignal('${firstItem}')">Inject Trend Signal</button>
+                    <button class="eval-btn eval-btn-secondary" onclick="window.replayOnboarding()">Replay Tour</button>
+                    <button class="eval-btn eval-btn-secondary" onclick="window.resetSession()">Reset Session</button>
                 </div>
             </div>
         `;
@@ -1460,10 +1463,10 @@ class StorefrontApp {
                 <div id="journey-step-title" class="journey-step-title">${step.title}</div>
             </div>
             <div class="journey-controls">
-                <button onclick="app.prevJourneyStep()" class="journey-btn">⏮ Prev</button>
-                <button id="journey-pause-btn" onclick="app.toggleJourneyPause()" class="journey-btn journey-btn-primary">${this.journeyState.isPaused ? '▶ Resume' : '⏸ Pause'}</button>
-                <button onclick="app.nextJourneyStep()" class="journey-btn">Next ⏭</button>
-                <button onclick="app.stopJourney()" class="journey-btn journey-btn-close">✕ Skip</button>
+                <button onclick="window.prevJourneyStep()" class="journey-btn">⏮ Prev</button>
+                <button id="journey-pause-btn" onclick="window.toggleJourneyPause()" class="journey-btn journey-btn-primary">${this.journeyState.isPaused ? '▶ Resume' : '⏸ Pause'}</button>
+                <button onclick="window.nextJourneyStep()" class="journey-btn">Next ⏭</button>
+                <button onclick="window.stopJourney()" class="journey-btn journey-btn-close">✕ Skip</button>
             </div>
         `;
     }
