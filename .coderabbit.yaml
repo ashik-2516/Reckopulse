@@ -1,0 +1,34 @@
+# ==============================================================================
+# CODERABBIT AI CODE REVIEW ENGINE CONFIGURATION
+# Repository: ashik-2516/Reckopulse
+# ==============================================================================
+version: "2"
+language: "en-US"
+tone_instructions: "Provide rigorous, professional, and pragmatic code reviews focusing on performance, security, JS/CSS aesthetics, state isolation, API contract safety, and automated Playwright UI testing standards."
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - master
+
+chat:
+  auto_reply: true
+
+path_filters:
+  - "!**/node_modules/**"
+  - "!**/vendor/**"
+  - "!**.min.js"
+  - "!**.min.css"
+  - "!**.db"
+  - "!**.db-shm"
+  - "!**.db-wal"
+
+summaries:
+  enabled: true
+  high_level_summary: true
+  poem: false
