@@ -1147,6 +1147,16 @@ class StorefrontApp {
         }
     }
 
+    saveWishlist() {
+        localStorage.setItem(`reco_wishlist_${this.visitorId}_${this.storeId}`, JSON.stringify(Array.from(this.wishlist)));
+        this.renderWishlistCount();
+    }
+
+    saveCart() {
+        localStorage.setItem(`reco_cart_${this.visitorId}_${this.storeId}`, JSON.stringify(this.cart));
+        this.renderCartUI();
+    }
+
     // Wishlist Functions
     toggleWishlist(productId) {
         if (this.wishlist.has(productId)) {
@@ -1334,6 +1344,9 @@ class StorefrontApp {
 
     // Guided Interactive Customer & Retention Journey Engine
     async runLiveCustomerJourney() {
+        // Stop any active onboarding tour overlays to guarantee clean unblocked interaction
+        this.skipOnboarding();
+
         // Stop any running timers and reset state for 100% repeatable fresh demo execution
         if (this.journeyState && this.journeyState.timer) {
             clearTimeout(this.journeyState.timer);
@@ -1638,13 +1651,16 @@ class StorefrontApp {
     checkOnboarding() {
         const completed = localStorage.getItem('recopulse_onboarding_completed');
         if (completed !== 'true') {
-            setTimeout(() => {
+            if (this.onboardingTimer) clearTimeout(this.onboardingTimer);
+            this.onboardingTimer = setTimeout(() => {
+                if (this.journeyState && this.journeyState.active) return;
                 this.startOnboarding();
             }, 800);
         }
     }
 
     startOnboarding() {
+        if (this.journeyState && this.journeyState.active) return;
         this.currentOnboardingStep = 0;
         this.renderOnboardingStep(0);
     }
@@ -1786,12 +1802,19 @@ class StorefrontApp {
     }
 
     skipOnboarding() {
+        if (this.onboardingTimer) {
+            clearTimeout(this.onboardingTimer);
+            this.onboardingTimer = null;
+        }
         localStorage.setItem('recopulse_onboarding_completed', 'true');
         const backdrop = document.getElementById('tour-backdrop-overlay');
         const spotlight = document.getElementById('tour-spotlight-box');
         const tooltip = document.getElementById('tour-tooltip-card');
 
-        if (backdrop) backdrop.classList.remove('active');
+        if (backdrop) {
+            backdrop.classList.remove('active');
+            backdrop.style.pointerEvents = 'none';
+        }
         if (tooltip) tooltip.classList.remove('active');
         
         setTimeout(() => {
