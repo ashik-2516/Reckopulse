@@ -774,12 +774,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const introDone = localStorage.getItem('recopulse_landing_intro_done');
-            if (introDone === 'true') {
-                skipIntro();
-            } else {
-                setTimeout(skipIntro, 1800); // 1.8s intro auto-dismiss
-            }
+            // Keep intro launch splash screen visible for 7 seconds (within 5-15 sec range)
+            setTimeout(skipIntro, 7000);
         });
 
         // Mobile Navigation Toggle
