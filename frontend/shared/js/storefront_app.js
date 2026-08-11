@@ -1063,18 +1063,18 @@ class StorefrontApp {
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Demo Checkout — Order Confirmation</h2>
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">This is a demonstration checkout flow. No real payment or sensitive data will be collected.</p>
                 
-                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e2e8f0; margin-bottom: 1.25rem;">
-                    <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">Order Summary:</div>
-                    ${this.cart.map(i => `<div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;"><span>${i.title} (x${i.qty})</span><strong>₹${Math.round(i.price * i.qty).toLocaleString('en-IN')}</strong></div>`).join('')}
+                <div style="background: #ffffff; color: #0f172a !important; padding: 1rem; border-radius: 0.5rem; border: 1px solid #cbd5e1; margin-bottom: 1.25rem;">
+                    <div style="font-weight: 800; font-size: 0.9rem; color: #0f172a !important; margin-bottom: 0.5rem;">Order Summary:</div>
+                    ${this.cart.map(i => `<div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#0f172a !important; margin-bottom:0.25rem;"><span style="color:#0f172a !important; font-weight:600;">${i.title} (x${i.qty})</span><strong style="color:#0f172a !important;">₹${Math.round(i.price * i.qty).toLocaleString('en-IN')}</strong></div>`).join('')}
                     ${discount > 0 ? `
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#16a34a; font-weight:700; margin-top:0.25rem;">
-                            <span>RecoPulse Instant Retention Offer:</span>
-                            <span>-₹${discount}</span>
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#15803d !important; font-weight:800; margin-top:0.35rem;">
+                            <span style="color:#15803d !important;">RecoPulse Instant Retention Offer:</span>
+                            <span style="color:#15803d !important;">-₹${discount}</span>
                         </div>
                     ` : ''}
-                    <div style="border-top: 1px solid #cbd5e1; margin-top: 0.5rem; padding-top: 0.5rem; display:flex; justify-content:space-between; font-weight:800;">
-                        <span>Total Amount:</span>
-                        <span style="color:#2563eb;">₹${Math.round(finalTotal).toLocaleString('en-IN')}</span>
+                    <div style="border-top: 1px solid #e2e8f0; margin-top: 0.5rem; padding-top: 0.5rem; display:flex; justify-content:space-between; font-weight:900; color:#0f172a !important;">
+                        <span style="color:#0f172a !important;">Total Amount:</span>
+                        <span style="color:#2563eb !important; font-size:1.05rem;">₹${Math.round(finalTotal).toLocaleString('en-IN')}</span>
                     </div>
                 </div>
 
@@ -1527,32 +1527,32 @@ class StorefrontApp {
         this.discountAmount = 150;
 
         const cartProduct = this.cart[0];
-        const recoItem = this.catalog.find(p => p.product_id !== (cartProduct ? cartProduct.product_id : null)) || this.catalog[1];
+        const recoItem = (this.catalog && this.catalog.length > 1) ? (this.catalog.find(p => p.product_id !== (cartProduct ? cartProduct.product_id : null)) || this.catalog[1]) : null;
 
         container.innerHTML = `
-            <div class="retention-banner-card">
+            <div class="retention-banner-card" style="background:#0f172a !important; color:#ffffff !important; border:1px solid #1e293b !important; padding:1.25rem 1.5rem !important; border-radius:1rem !important;">
                 <div class="retention-banner-left">
-                    <div class="retention-banner-badge">AI OFFER</div>
+                    <div class="retention-banner-badge" style="background:#2563eb !important; color:#ffffff !important;">AI OFFER</div>
                     <div style="flex:1; min-width:0;">
-                        <div style="font-size: 0.725rem; font-weight: 800; color: #93c5fd; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem;">RecoPulse AI Cart Retention Recovery</div>
-                        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff;">Complete your order now & get <span style="color:#34d399;">₹150 INSTANT OFF</span>!</div>
-                        <div style="font-size: 0.825rem; color: #cbd5e1; margin-top: 0.25rem; margin-bottom: 0.6rem;">
-                            Promo code <strong style="color:#fcd34d; background:rgba(252,211,77,0.15); padding:0.15rem 0.4rem; border-radius:0.25rem;">RECOPULSE150</strong> automatically applied at checkout.
+                        <div style="font-size: 0.725rem; font-weight: 800; color: #93c5fd !important; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem;">RecoPulse AI Cart Retention Recovery</div>
+                        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff !important;">Complete your order now & get <span style="color:#34d399 !important; font-weight:900;">₹150 INSTANT OFF</span>!</div>
+                        <div style="font-size: 0.825rem; color: #e2e8f0 !important; margin-top: 0.25rem; margin-bottom: 0.6rem;">
+                            Promo code <strong style="color:#fef08a !important; background:rgba(250,204,21,0.2) !important; padding:0.15rem 0.45rem; border-radius:0.25rem; border:1px solid rgba(250,204,21,0.4);">RECOPULSE150</strong> automatically applied at checkout.
                         </div>
-                        <button onclick="app.openCheckoutModal();" class="retention-checkout-btn">Proceed to Checkout (₹150 OFF Applied) →</button>
+                        <button onclick="app.openCheckoutModal();" class="retention-checkout-btn" style="background:#10b981 !important; color:#ffffff !important; border:none; padding:0.55rem 1.15rem; border-radius:0.5rem; font-weight:800; cursor:pointer;">Proceed to Checkout (₹150 OFF Applied) →</button>
                     </div>
                 </div>
                 ${recoItem ? `
-                    <div class="retention-upsell-box">
+                    <div class="retention-upsell-box" style="background:#1e293b !important; border:1px solid #334155 !important;">
                         <div style="display:flex; align-items:center; gap:0.6rem; min-width:0; flex:1;">
                             <img src="${recoItem.image_url}" width="42" height="42" style="object-fit:cover; border-radius:0.375rem; flex-shrink:0;" onerror="this.onerror=null; this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
                             <div style="min-width:0; flex:1;">
-                                <div style="font-size:0.7rem; font-weight:700; color:#a5b4fc;">Frequently Bought Together (Optional):</div>
-                                <div style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${recoItem.title}</div>
-                                <div style="font-size:0.78rem; font-weight:800; color:#4ade80;">₹${Math.round(recoItem.price).toLocaleString('en-IN')}</div>
+                                <div style="font-size:0.7rem; font-weight:700; color:#a5b4fc !important;">Frequently Bought Together (Optional):</div>
+                                <div style="font-size:0.8rem; font-weight:700; color:#ffffff !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${recoItem.title}</div>
+                                <div style="font-size:0.78rem; font-weight:800; color:#4ade80 !important;">₹${Math.round(recoItem.price).toLocaleString('en-IN')}</div>
                             </div>
                         </div>
-                        <button onclick="app.addToCart('${recoItem.product_id}'); app.showToast('Added ${recoItem.title} to your order!');" class="retention-upsell-btn">+ Add Item</button>
+                        <button onclick="app.addToCart('${recoItem.product_id}'); app.showToast('Added ${recoItem.title} to your order!');" class="retention-upsell-btn" style="background:#2563eb !important; color:#ffffff !important; border:none; padding:0.45rem 0.85rem; border-radius:0.375rem; font-weight:700; cursor:pointer;">+ Add Item</button>
                     </div>
                 ` : ''}
             </div>
