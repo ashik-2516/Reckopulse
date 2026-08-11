@@ -20,6 +20,11 @@ def create_app():
     def send_sdk(path):
         return send_from_directory(os.path.join(BASE_DIR, 'sdk'), path)
 
+    # Root favicon route for instant browser logo load
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(BASE_DIR, 'frontend', 'shared', 'favicons'), 'favicon-recopulse.svg', mimetype='image/svg+xml')
+
     # Storefront & Platform Routes
     @app.route('/')
     def index():

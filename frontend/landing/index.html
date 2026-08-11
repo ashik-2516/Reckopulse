@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RecoPulse — Intelligent Recommendations. Built for Every Store.</title>
     <link rel="icon" type="image/svg+xml" href="/frontend/shared/favicons/favicon-recopulse.svg">
+    <link rel="preload" as="image" href="/frontend/shared/favicons/favicon-recopulse.svg" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="/frontend/shared/js/theme_engine.js"></script>
     <style>
@@ -409,10 +410,8 @@
     <!-- Header Navigation -->
     <nav class="navbar" style="position: relative;">
         <div class="navbar-inner">
-            <a href="/" class="brand-logo">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 12h4l3-8 4 16 3-8h4" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            <a href="/" class="brand-logo" style="display:flex; align-items:center; gap:0.5rem;">
+                <img src="/frontend/shared/favicons/favicon-recopulse.svg" width="28" height="28" alt="RecoPulse Logo" style="display:inline-block; vertical-align:middle;" />
                 <span>RecoPulse</span>
             </a>
 
