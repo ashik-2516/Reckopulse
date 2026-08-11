@@ -178,6 +178,26 @@ class StorefrontApp {
     }
 
     bindEvents() {
+        // Executive Store Switcher Dropdown Click Handler
+        const switcherBtn = document.querySelector('.store-switcher-btn');
+        if (switcherBtn) {
+            switcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dropdown = switcherBtn.closest('.store-switcher-dropdown');
+                if (dropdown) dropdown.classList.toggle('active');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.header-search-bar')) {
+                this.closeSearchAutocomplete();
+            }
+            const switcher = document.querySelector('.store-switcher-dropdown');
+            if (switcher && !switcher.contains(e.target)) {
+                switcher.classList.remove('active');
+            }
+        });
+
         // Search Input with Debounce & Instant Commerce Autocomplete
         const searchEl = document.getElementById('search-input');
         if (searchEl) {
@@ -195,20 +215,6 @@ class StorefrontApp {
 
             searchEl.addEventListener('keydown', (e) => {
                 this.handleSearchKeydown(e);
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.header-search-bar')) {
-                    this.closeSearchAutocomplete();
-                }
-                const switcher = document.querySelector('.store-switcher-dropdown');
-                if (switcher && !switcher.contains(e.target)) {
-                    const menu = switcher.querySelector('.store-switcher-menu');
-                    if (menu) {
-                        menu.style.display = 'none';
-                        menu.style.opacity = '0';
-                    }
-                }
             });
         }
 
@@ -1555,6 +1561,13 @@ class StorefrontApp {
 
         const bar = document.getElementById('journey-controller-bar');
         if (bar) bar.remove();
+
+        this.closeProductModal();
+        this.toggleCartDrawer(false);
+        this.skipOnboarding();
+
+        const switcher = document.querySelector('.store-switcher-dropdown');
+        if (switcher) switcher.classList.remove('active');
 
         // Reset cart and wishlist so session is clean after demo completion
         this.cart = [];

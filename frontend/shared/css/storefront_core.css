@@ -2034,10 +2034,12 @@ button, a.action-btn, .cat-pill, .btn-primary, .btn-secondary, .cart-item-qty bu
 }
 
 .store-switcher-dropdown:hover .store-switcher-menu,
-.store-switcher-dropdown:focus-within .store-switcher-menu {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
+.store-switcher-dropdown:focus-within .store-switcher-menu,
+.store-switcher-dropdown.active .store-switcher-menu {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
 }
 
 [data-theme="dark"] .store-switcher-menu {
