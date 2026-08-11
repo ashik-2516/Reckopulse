@@ -111,13 +111,20 @@ class StorefrontApp {
         this.bindEvents();
         this.renderCartUI();
         this.renderWishlistCount();
+        
+        // Expose global methods for 100% reliable click execution across all versions
+        window.runLiveCustomerJourney = () => this.runLiveCustomerJourney();
+        window.replayOnboarding = () => this.replayOnboarding();
+        window.skipOnboarding = () => this.skipOnboarding();
+        window.nextOnboardingStep = () => this.nextOnboardingStep();
+
         this.checkOnboarding();
     }
 
     renderEvaluatorToolbar() {
         const container = document.getElementById('evaluator-floating-bar');
         if (!container) return;
-        const firstItem = (this.catalog && this.catalog[0]) ? this.catalog[0].id : 'ITEM-101';
+        const firstItem = (this.catalog && this.catalog[0]) ? (this.catalog[0].product_id || this.catalog[0].id || 'ITEM-101') : 'ITEM-101';
         container.innerHTML = `
             <div class="demo-evaluator-toolbar">
                 <div class="eval-toggle-handle" onclick="this.parentElement.classList.toggle('expanded')">
@@ -135,9 +142,9 @@ class StorefrontApp {
                     </select>
                 </div>
                 <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
-                    <button class="eval-btn" style="background:#8b5cf6;" onclick="window.app.runLiveCustomerJourney()">▶ Demo Mode: Live Journey</button>
+                    <button class="eval-btn" style="background:#8b5cf6;" onclick="window.runLiveCustomerJourney ? window.runLiveCustomerJourney() : (window.app && window.app.runLiveCustomerJourney && window.app.runLiveCustomerJourney())">▶ Demo Mode: Live Journey</button>
                     <button class="eval-btn" onclick="window.activateTrendSignal ? window.activateTrendSignal() : (window.app && window.app.activateTrendSignal && window.app.activateTrendSignal('${firstItem}'))">Inject Trend Signal</button>
-                    <button class="eval-btn eval-btn-secondary" onclick="window.app.replayOnboarding()">Replay Tour</button>
+                    <button class="eval-btn eval-btn-secondary" onclick="window.replayOnboarding ? window.replayOnboarding() : (window.app && window.app.replayOnboarding && window.app.replayOnboarding())">Replay Tour</button>
                     <button class="eval-btn eval-btn-secondary" onclick="window.resetSession ? window.resetSession() : (window.app && window.app.resetSession && window.app.resetSession())">Reset Session</button>
                 </div>
             </div>
@@ -1661,7 +1668,7 @@ class StorefrontApp {
                     <div class="tour-arrow ${arrowClass}"></div>
                     <div class="tour-header">
                         <div class="tour-step-badge">${step.badge}</div>
-                        <button class="tour-close-btn" onclick="app.skipOnboarding()">Skip tour</button>
+                        <button class="tour-close-btn" onclick="window.app ? window.app.skipOnboarding() : (window.skipOnboarding && window.skipOnboarding())">Skip tour</button>
                     </div>
                     <h3 class="tour-title">${step.title}</h3>
                     <p class="tour-desc">${descText}</p>
@@ -1671,8 +1678,8 @@ class StorefrontApp {
                     <div class="tour-footer">
                         <div class="tour-progress">Step ${stepIdx + 1} of ${total}</div>
                         <div class="tour-nav-btns">
-                            <button class="btn-tour-skip" onclick="app.skipOnboarding()">Skip</button>
-                            <button class="btn-tour-next" onclick="app.nextOnboardingStep()">
+                            <button class="btn-tour-skip" onclick="window.app ? window.app.skipOnboarding() : (window.skipOnboarding && window.skipOnboarding())">Skip</button>
+                            <button class="btn-tour-next" onclick="window.app ? window.app.nextOnboardingStep() : (window.nextOnboardingStep && window.nextOnboardingStep())">
                                 ${stepIdx === total - 1 ? 'Finish Tour' : 'Next Step →'}
                             </button>
                         </div>
@@ -1698,7 +1705,7 @@ class StorefrontApp {
             tooltip.innerHTML = `
                 <div class="tour-header">
                     <div class="tour-step-badge">${step.badge}</div>
-                    <button class="tour-close-btn" onclick="app.skipOnboarding()">Skip tour</button>
+                    <button class="tour-close-btn" onclick="window.app ? window.app.skipOnboarding() : (window.skipOnboarding && window.skipOnboarding())">Skip tour</button>
                 </div>
                 <h3 class="tour-title">${step.title}</h3>
                 <p class="tour-desc">${descText}</p>
@@ -1708,8 +1715,8 @@ class StorefrontApp {
                 <div class="tour-footer">
                     <div class="tour-progress">Step ${stepIdx + 1} of ${total}</div>
                     <div class="tour-nav-btns">
-                        <button class="btn-tour-skip" onclick="app.skipOnboarding()">Skip</button>
-                        <button class="btn-tour-next" onclick="app.nextOnboardingStep()">
+                        <button class="btn-tour-skip" onclick="window.app ? window.app.skipOnboarding() : (window.skipOnboarding && window.skipOnboarding())">Skip</button>
+                        <button class="btn-tour-next" onclick="window.app ? window.app.nextOnboardingStep() : (window.nextOnboardingStep && window.nextOnboardingStep())">
                             ${stepIdx === total - 1 ? 'Finish Tour' : 'Next Step →'}
                         </button>
                     </div>
