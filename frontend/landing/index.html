@@ -389,21 +389,22 @@
             .stage-3d-wrap { display: none; } /* Mobile Fallback */
             .page-section { padding: 3.5rem 1rem; }
             .navbar-inner .nav-right-actions .btn-nav-primary { display: none !important; }
-            .mobile-only-cta { display: block !important; }
+        @keyframes pulseLogo {
+            0% { transform: scale(0.96); filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5)); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 0 35px rgba(59, 130, 246, 0.95)); }
+            100% { transform: scale(0.96); filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5)); }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. Cinematic Intro Sequence (Short ~1.5s, with instant skip & localStorage flag) -->
+    <!-- 1. Cinematic Launch Intro Sequence -->
     <div class="intro-overlay" id="intro-overlay">
         <button class="intro-skip-btn" onclick="skipIntro()">Skip</button>
-        <div style="text-align: center;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="margin-bottom: 1rem;">
-                <path d="M3 12h4l3-8 4 16 3-8h4" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="mono" style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">RECOPULSE</div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: #ffffff;">Intelligence, in every interaction.</h2>
+        <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="/frontend/shared/favicons/favicon-recopulse.svg" width="76" height="76" alt="RecoPulse Launch Logo" style="display: block; margin-bottom: 1.25rem; filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.85)); animation: pulseLogo 1.5s infinite ease-in-out;" />
+            <div class="mono" style="font-size: 0.85rem; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.25em; margin-bottom: 0.5rem;">RECOPULSE</div>
+            <h2 style="font-size: 1.65rem; font-weight: 800; color: #ffffff; margin: 0;">Intelligence, in every interaction.</h2>
         </div>
     </div>
 
