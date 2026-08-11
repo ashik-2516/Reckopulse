@@ -1502,6 +1502,10 @@ class StorefrontApp {
         if (stepNumEl) stepNumEl.innerText = step.num;
         if (stepTitleEl) stepTitleEl.innerText = step.title;
 
+        // Clean up open modals/drawers when changing steps to prevent pointer occlusion
+        if (idx !== 1) this.closeProductModal();
+        if (idx !== 3) this.toggleCartDrawer(false);
+
         try {
             step.action();
         } catch (e) {
