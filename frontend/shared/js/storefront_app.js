@@ -1477,7 +1477,7 @@ class StorefrontApp {
         const step = this.journeySteps[this.journeyState.currentIdx];
 
         bar.innerHTML = `
-            <div style="flex:1; min-width:0;">
+            <div style="flex:1; min-width:0;" class="journey-step-info">
                 <div class="journey-step-tag">LIVE DEMO JOURNEY • STEP <span id="journey-step-num">${step.num}</span> OF ${this.journeySteps.length}</div>
                 <div id="journey-step-title" class="journey-step-title">${step.title}</div>
             </div>

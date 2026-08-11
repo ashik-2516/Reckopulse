@@ -1447,6 +1447,7 @@ body {
   color: #60a5fa;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap !important;
 }
 
 .journey-step-title {
@@ -1457,6 +1458,59 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 320px;
+}
+
+/* Mobile Responsive Floating Demo Controller Bar - Sleek, Compact & Professional */
+@media (max-width: 640px) {
+  .journey-controller-bar {
+    bottom: 16px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 95vw !important;
+    max-width: 440px !important;
+    padding: 0.5rem 0.65rem !important;
+    gap: 0.4rem !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .journey-step-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .journey-step-tag {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.03em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+
+  .journey-step-title {
+    font-size: 0.72rem !important;
+    max-width: 110px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+
+  .journey-controls {
+    gap: 0.2rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .journey-btn {
+    padding: 0.32rem 0.4rem !important;
+    font-size: 0.68rem !important;
+    border-radius: 0.35rem !important;
+    white-space: nowrap !important;
+  }
 }
 
 .journey-controls {
