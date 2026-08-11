@@ -107,10 +107,41 @@ class StorefrontApp {
             RecoEngine.init({ storeId: this.storeId });
         }
         await this.loadCatalog();
+        this.renderEvaluatorToolbar();
         this.bindEvents();
         this.renderCartUI();
         this.renderWishlistCount();
         this.checkOnboarding();
+    }
+
+    renderEvaluatorToolbar() {
+        const container = document.getElementById('evaluator-floating-bar');
+        if (!container) return;
+        const firstItem = (this.catalog && this.catalog[0]) ? this.catalog[0].id : 'ITEM-101';
+        container.innerHTML = `
+            <div class="demo-evaluator-toolbar">
+                <div class="eval-toggle-handle" onclick="this.parentElement.classList.toggle('expanded')">
+                    <span>⚡ RecoPulse Evaluator Tooling</span>
+                    <span class="eval-toggle-badge">Tap to Expand ▲</span>
+                </div>
+                <div class="eval-left">
+                    <span><strong>RecoPulse Evaluator Tooling:</strong></span>
+                    <label for="persona-select">Persona:</label>
+                    <select id="persona-select" class="eval-select" onchange="window.switchPersona ? window.switchPersona(this.value) : (window.app && window.app.switchPersona && window.app.switchPersona(this.value))">
+                        <option value="new">1. New Visitor (Cold-Start)</option>
+                        <option value="active">2. Active Shopper</option>
+                        <option value="returning">3. Returning Customer</option>
+                        <option value="churn_risk">4. Likely-Churn Risk</option>
+                    </select>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                    <button class="eval-btn" style="background:#8b5cf6;" onclick="window.app.runLiveCustomerJourney()">▶ Demo Mode: Live Journey</button>
+                    <button class="eval-btn" onclick="window.activateTrendSignal ? window.activateTrendSignal() : (window.app && window.app.activateTrendSignal && window.app.activateTrendSignal('${firstItem}'))">Inject Trend Signal</button>
+                    <button class="eval-btn eval-btn-secondary" onclick="window.app.replayOnboarding()">Replay Tour</button>
+                    <button class="eval-btn eval-btn-secondary" onclick="window.resetSession ? window.resetSession() : (window.app && window.app.resetSession && window.app.resetSession())">Reset Session</button>
+                </div>
+            </div>
+        `;
     }
 
     async loadCatalog() {

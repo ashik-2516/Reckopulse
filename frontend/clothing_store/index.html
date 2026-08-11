@@ -168,25 +168,7 @@
     </div>
 
     <!-- Floating Evaluator Control Toolbar -->
-    <div class="demo-evaluator-toolbar">
-        <div class="eval-left">
-            <span><strong>RecoPulse Evaluator Tooling:</strong></span>
-            <label for="persona-select">Persona:</label>
-            <select id="persona-select" class="eval-select" onchange="switchPersona(this.value)">
-                <option value="new">1. New Visitor (Cold-Start)</option>
-                <option value="active">2. Active Shopper</option>
-                <option value="returning">3. Returning Customer</option>
-                <option value="churn_risk">4. Likely-Churn Risk</option>
-            </select>
-        </div>
-        <div>
-            <button class="eval-btn" style="background:#8b5cf6;" onclick="app.runLiveCustomerJourney()">▶ Demo Mode: Live Journey</button>
-            <button class="eval-btn" onclick="activateTrendSignal()">Inject Trend Signal (CLOTH-108)</button>
-            <button class="eval-btn eval-btn-secondary" onclick="app.replayOnboarding()">Replay Tour</button>
-            <button class="eval-btn eval-btn-secondary" onclick="resetSession()">Reset Session</button>
-        </div>
-
-    </div>
+    <div id="evaluator-floating-bar"></div>
 
     <script src="/sdk/reco-sdk.js?v=6.0"></script>
     <script src="/frontend/shared/js/storefront_app.js?v=6.0"></script>
