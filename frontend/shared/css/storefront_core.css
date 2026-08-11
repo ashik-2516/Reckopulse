@@ -202,6 +202,8 @@ body {
   white-space: nowrap !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  position: relative;
+  z-index: 50;
 }
 .category-nav-bar::-webkit-scrollbar {
   display: none;
@@ -215,15 +217,16 @@ body {
   flex-wrap: nowrap !important;
   gap: 0.5rem !important;
   align-items: center !important;
-  width: max-content;
+  width: max-content !important;
   min-width: 100%;
 }
 
 .cat-pill {
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: center !important;
   flex-shrink: 0 !important;
-  padding: 0.4rem 0.85rem !important;
+  padding: 0.4rem 0.95rem !important;
   border-radius: var(--radius-full);
   font-size: 0.8rem !important;
   font-weight: 600 !important;
@@ -236,6 +239,8 @@ body {
   white-space: nowrap !important;
   position: static !important;
   box-sizing: border-box !important;
+  min-height: 38px !important;
+  min-width: max-content !important;
 }
 
 .cat-pill:hover, .cat-pill.active {
@@ -1225,6 +1230,24 @@ body {
     order: 3;
     width: 100%;
     max-width: 100%;
+  }
+  .category-nav-bar {
+    width: 100% !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .category-nav-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+    padding: 0.4rem 0.85rem !important;
+    width: max-content !important;
+    min-width: 100% !important;
+  }
+  .cat-pill {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
   }
   .content-grid {
     grid-template-columns: 1fr;
