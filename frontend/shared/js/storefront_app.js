@@ -1321,10 +1321,29 @@ class StorefrontApp {
 
     // Guided Interactive Customer & Retention Journey Engine
     async runLiveCustomerJourney() {
-        if (this.journeyState && this.journeyState.active) {
-            this.stopJourney();
-            return;
+        // Stop any running timers and reset state for 100% repeatable fresh demo execution
+        if (this.journeyState && this.journeyState.timer) {
+            clearTimeout(this.journeyState.timer);
         }
+
+        // Always reset cart, wishlist, and retention state for clean demo start
+        this.cart = [];
+        this.wishlist = [];
+        this.isCartAbandoned = false;
+        this.discountAmount = 0;
+        this.saveCart();
+        this.saveWishlist();
+        this.renderCartUI();
+        this.renderWishlistCount();
+
+        const existingBanner = document.getElementById('cart-retention-banner');
+        if (existingBanner) {
+            existingBanner.innerHTML = '';
+            existingBanner.remove();
+        }
+
+        this.closeProductModal();
+        this.toggleCartDrawer(false);
 
         if (!this.catalog || this.catalog.length === 0) {
             this.showToast('Loading catalog data...', 'info');
