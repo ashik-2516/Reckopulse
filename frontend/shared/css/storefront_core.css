@@ -1313,6 +1313,167 @@ body {
     padding: 0.5rem !important;
   }
 
+/* Executive Cart Retention Recovery Banner */
+.retention-banner-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid #334155;
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+  color: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.retention-banner-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.retention-banner-badge {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.375rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.retention-checkout-btn {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1.15rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.retention-checkout-btn:hover {
+  transform: translateY(-1px);
+}
+
+.retention-upsell-box {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 0.75rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.retention-upsell-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Floating Interactive Journey Controller Bar */
+.journey-controller-bar {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #090d16;
+  border: 1px solid #2563eb;
+  border-radius: 0.85rem;
+  padding: 0.75rem 1.25rem;
+  color: #ffffff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 92vw;
+  width: 640px;
+  box-sizing: border-box;
+  animation: slideUpJourney 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpJourney {
+  from { transform: translate(-50%, 100%); }
+  to { transform: translate(-50%, 0); }
+}
+
+.journey-step-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #60a5fa;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-step-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.journey-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.journey-btn {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.journey-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.journey-btn-primary {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.journey-btn-close {
+  background: #ef4444;
+  border-color: #f87171;
+  color: #ffffff;
+}
+
   /* Sticky Mobile Filter & Sort Bar (Myntra / Ajio E-Commerce Pattern) */
   .mobile-filter-bar {
     display: flex !important;

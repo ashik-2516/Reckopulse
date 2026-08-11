@@ -181,6 +181,14 @@ class StorefrontApp {
                 if (!e.target.closest('.header-search-bar')) {
                     this.closeSearchAutocomplete();
                 }
+                const switcher = document.querySelector('.store-switcher-dropdown');
+                if (switcher && !switcher.contains(e.target)) {
+                    const menu = switcher.querySelector('.store-switcher-menu');
+                    if (menu) {
+                        menu.style.display = 'none';
+                        menu.style.opacity = '0';
+                    }
+                }
             });
         }
 
@@ -1304,73 +1312,185 @@ class StorefrontApp {
         modal.classList.add('active');
     }
 
-    // Real Interactive Customer & Retention Journey Execution Engine (Evaluator Mode)
-    async runLiveCustomerJourney() {
-        this.showToast('Starting Live Customer Journey Simulation...', 'info');
-        
+    // Guided Interactive Customer & Retention Journey Engine
+    runLiveCustomerJourney() {
+        if (this.journeyState && this.journeyState.active) {
+            this.stopJourney();
+            return;
+        }
+
         const sampleProduct = this.catalog && this.catalog.length > 0 ? this.catalog[0] : null;
         if (!sampleProduct) return;
         const pid = sampleProduct.product_id;
 
-        // Step 1: DISCOVER — Scroll smoothly to catalog & open real product modal
-        this.showToast('01 DISCOVER — Shopper arrives & explores catalog item...');
-        const catalogEl = document.getElementById('catalog-grid');
-        if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        await new Promise(r => setTimeout(r, 1500));
-        
-        this.openProductModal(pid);
-        await new Promise(r => setTimeout(r, 2000));
+        this.journeySteps = [
+            {
+                num: 1,
+                title: "01 DISCOVER — Shopper arrives & explores catalog",
+                desc: "Initializes shopper context vector and renders catalog grid.",
+                action: () => {
+                    const catalogEl = document.getElementById('catalog-grid');
+                    if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            },
+            {
+                num: 2,
+                title: "02 INTENT — Shopper views product details",
+                desc: "Captures category & brand affinity signals to update real-time interest vector.",
+                action: () => {
+                    this.openProductModal(pid);
+                }
+            },
+            {
+                num: 3,
+                title: "03 RE-RANKING — RecoPulse computes personalized candidate ranking",
+                desc: "SVD + TF-IDF content similarity ranks candidate products instantly.",
+                action: () => {
+                    this.closeProductModal();
+                    const recoShelf = document.getElementById('reco-shelf-personalized');
+                    if (recoShelf) recoShelf.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            },
+            {
+                num: 4,
+                title: "04 CART & AFFINITY — High-intent item added to shopping cart",
+                desc: "Saves product to cart and updates shopper session affinity.",
+                action: () => {
+                    this.toggleWishlist(pid);
+                    this.addToCart(pid);
+                    this.toggleCartDrawer(true);
+                }
+            },
+            {
+                num: 5,
+                title: "05 RETENTION RECOVERY — Cart abandonment triggers AI ₹150 offer",
+                desc: "Detects exit intent, logs abandonment event, and displays ₹150 recovery banner.",
+                action: () => {
+                    this.toggleCartDrawer(false);
+                    this.isCartAbandoned = true;
+                    if (window.RecoEngine) RecoEngine.trackEvent('cart_abandoned', pid);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    this.renderRetentionBanner();
+                    const retBanner = document.getElementById('cart-retention-banner');
+                    if (retBanner) retBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            },
+            {
+                num: 6,
+                title: "06 A/B EVALUATION — Empirical rank displacement verified",
+                desc: "Displays Controlled A/B Evaluation comparing baseline vs RecoPulse hybrid.",
+                action: () => {
+                    this.loadComparisonSection();
+                    const compEl = document.getElementById('recopulse-comparison-container');
+                    if (compEl) compEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        ];
 
-        // Step 2: RECOMMEND — Close product modal, scroll to recommendation shelf
-        this.showToast('02 RECOMMEND — RecoPulse computes real-time hybrid candidate ranking...');
-        this.closeProductModal();
-        const recoShelf = document.getElementById('reco-shelf-personalized');
-        if (recoShelf) recoShelf.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        await new Promise(r => setTimeout(r, 1800));
+        this.journeyState = {
+            active: true,
+            currentIdx: 0,
+            isPaused: false,
+            timer: null
+        };
 
-        // Step 3: WISHLIST — Visually click wishlist button & update badge
-        this.showToast('03 WISHLIST — Shopper saves high-intent item to Wishlist...');
-        this.toggleWishlist(pid);
-        const cardEl = document.querySelector(`.product-card[data-pid="${pid}"]`);
-        if (cardEl) {
-            cardEl.style.outline = '3px solid #3b82f6';
-            cardEl.style.transition = 'outline 0.3s ease';
+        this.renderJourneyControllerUI();
+        this.executeJourneyStep(0);
+    }
+
+    renderJourneyControllerUI() {
+        let bar = document.getElementById('journey-controller-bar');
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'journey-controller-bar';
+            bar.className = 'journey-controller-bar';
+            document.body.appendChild(bar);
         }
-        await new Promise(r => setTimeout(r, 1800));
 
-        // Step 4: CART — Visually click Add to Cart & slide out real Cart Drawer
-        this.showToast('04 CART — Shopper adds item to shopping cart...');
-        this.addToCart(pid);
-        this.toggleCartDrawer(true);
-        await new Promise(r => setTimeout(r, 2200));
+        const step = this.journeySteps[this.journeyState.currentIdx];
 
-        // Step 5: ABANDON — Close cart drawer & simulate abandonment
-        this.showToast('05 ABANDON — Shopper navigates away without checkout (abandonment event logged)...');
-        this.toggleCartDrawer(false);
-        this.isCartAbandoned = true;
-        if (window.RecoEngine) {
-            RecoEngine.trackEvent('cart_abandoned', pid);
+        bar.innerHTML = `
+            <div style="flex:1; min-width:0;">
+                <div class="journey-step-tag">LIVE DEMO JOURNEY • STEP <span id="journey-step-num">${step.num}</span> OF ${this.journeySteps.length}</div>
+                <div id="journey-step-title" class="journey-step-title">${step.title}</div>
+            </div>
+            <div class="journey-controls">
+                <button onclick="app.prevJourneyStep()" class="journey-btn">⏮ Prev</button>
+                <button id="journey-pause-btn" onclick="app.toggleJourneyPause()" class="journey-btn journey-btn-primary">${this.journeyState.isPaused ? '▶ Resume' : '⏸ Pause'}</button>
+                <button onclick="app.nextJourneyStep()" class="journey-btn">Next ⏭</button>
+                <button onclick="app.stopJourney()" class="journey-btn journey-btn-close">✕ Skip</button>
+            </div>
+        `;
+    }
+
+    executeJourneyStep(idx) {
+        if (!this.journeyState || !this.journeyState.active) return;
+
+        if (idx < 0) idx = 0;
+        if (idx >= this.journeySteps.length) {
+            this.showToast('Demo Customer Journey Completed!', 'success');
+            this.stopJourney();
+            return;
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        await new Promise(r => setTimeout(r, 2000));
 
-        // Step 6 & 7: DETECT & OFFER — Render real retention recovery banner
-        this.showToast('06 & 07 DETECT & OFFER — RecoPulse generates personalized ₹150 recovery offer...');
-        this.renderRetentionBanner();
-        const retBanner = document.getElementById('cart-retention-banner');
-        if (retBanner) retBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        await new Promise(r => setTimeout(r, 2200));
+        this.journeyState.currentIdx = idx;
+        const step = this.journeySteps[idx];
 
-        // Step 8 & 9: RETURN & PURCHASE — Open checkout modal & complete real purchase
-        this.showToast('08 & 09 RETURN & PURCHASE — Shopper returns & completes order with recovery offer applied!');
-        this.openCheckoutModal();
-        await new Promise(r => setTimeout(r, 2200));
-        
-        this.processDemoPurchase();
-        if (cardEl) cardEl.style.outline = 'none';
-        
-        // Step 10: REVENUE — Final confirmation
-        this.showToast('10 REVENUE — Order completed! Recovered revenue credited to Merchant Console.', 'success');
+        const stepNumEl = document.getElementById('journey-step-num');
+        const stepTitleEl = document.getElementById('journey-step-title');
+        if (stepNumEl) stepNumEl.innerText = step.num;
+        if (stepTitleEl) stepTitleEl.innerText = step.title;
+
+        try {
+            step.action();
+        } catch (e) {
+            console.error('[DemoJourney] Action error:', e);
+        }
+
+        this.showToast(step.title, 'info');
+
+        if (this.journeyState.timer) clearTimeout(this.journeyState.timer);
+        if (!this.journeyState.isPaused) {
+            this.journeyState.timer = setTimeout(() => {
+                this.executeJourneyStep(idx + 1);
+            }, 3600);
+        }
+    }
+
+    toggleJourneyPause() {
+        if (!this.journeyState) return;
+        this.journeyState.isPaused = !this.journeyState.isPaused;
+        const pauseBtn = document.getElementById('journey-pause-btn');
+        if (pauseBtn) pauseBtn.innerText = this.journeyState.isPaused ? '▶ Resume' : '⏸ Pause';
+
+        if (this.journeyState.isPaused) {
+            if (this.journeyState.timer) clearTimeout(this.journeyState.timer);
+            this.showToast('Demo Journey Paused (Inspect step at your pace)', 'info');
+        } else {
+            this.showToast('Demo Journey Resumed', 'info');
+            this.journeyState.timer = setTimeout(() => {
+                this.executeJourneyStep(this.journeyState.currentIdx + 1);
+            }, 2800);
+        }
+    }
+
+    prevJourneyStep() {
+        if (!this.journeyState) return;
+        this.executeJourneyStep(this.journeyState.currentIdx - 1);
+    }
+
+    nextJourneyStep() {
+        if (!this.journeyState) return;
+        this.executeJourneyStep(this.journeyState.currentIdx + 1);
+    }
+
+    stopJourney() {
+        if (this.journeyState && this.journeyState.timer) clearTimeout(this.journeyState.timer);
+        this.journeyState = { active: false, currentIdx: 0, isPaused: false, timer: null };
+
+        const bar = document.getElementById('journey-controller-bar');
+        if (bar) bar.remove();
+        this.showToast('Demo Journey Closed', 'info');
     }
 
     renderRetentionBanner() {
@@ -1401,27 +1521,29 @@ class StorefrontApp {
         const recoItem = this.catalog.find(p => p.product_id !== (cartProduct ? cartProduct.product_id : null)) || this.catalog[1];
 
         container.innerHTML = `
-            <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #334155; border-radius: 1rem; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                <div style="display:flex; align-items:center; gap:1rem;">
-                    <div style="background:#2563eb; color:#ffffff; font-size:0.7rem; font-weight:800; padding:0.4rem 0.6rem; border-radius:0.375rem; letter-spacing:0.05em; text-transform:uppercase;">AI Offer</div>
-                    <div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #93c5fd; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem;">RecoPulse AI Cart Retention Recovery</div>
-                        <div style="font-size: 1.15rem; font-weight: 800; color: #ffffff;">Complete your order now & get <span style="color:#34d399;">₹150 INSTANT OFF</span>!</div>
-                        <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.25rem; margin-bottom: 0.5rem;">
+            <div class="retention-banner-card">
+                <div class="retention-banner-left">
+                    <div class="retention-banner-badge">AI OFFER</div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-size: 0.725rem; font-weight: 800; color: #93c5fd; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem;">RecoPulse AI Cart Retention Recovery</div>
+                        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff;">Complete your order now & get <span style="color:#34d399;">₹150 INSTANT OFF</span>!</div>
+                        <div style="font-size: 0.825rem; color: #cbd5e1; margin-top: 0.25rem; margin-bottom: 0.6rem;">
                             Promo code <strong style="color:#fcd34d; background:rgba(252,211,77,0.15); padding:0.15rem 0.4rem; border-radius:0.25rem;">RECOPULSE150</strong> automatically applied at checkout.
                         </div>
-                        <button onclick="app.openCheckoutModal();" style="background:#10b981; color:#fff; border:none; padding:0.5rem 1.15rem; border-radius:0.5rem; font-size:0.85rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Proceed to Checkout (₹150 OFF Applied) →</button>
+                        <button onclick="app.openCheckoutModal();" class="retention-checkout-btn">Proceed to Checkout (₹150 OFF Applied) →</button>
                     </div>
                 </div>
                 ${recoItem ? `
-                    <div style="display:flex; align-items:center; background:rgba(15,23,42,0.6); padding:0.6rem 0.85rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.15); gap:0.75rem;">
-                        <img src="${recoItem.image_url}" width="42" height="42" style="object-fit:cover; border-radius:0.375rem;" onerror="this.onerror=null; this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
-                        <div>
-                            <div style="font-size:0.75rem; font-weight:700; color:#a5b4fc;">Frequently Bought Together (Optional):</div>
-                            <div style="font-size:0.825rem; font-weight:700; color:#ffffff; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${recoItem.title}</div>
-                            <div style="font-size:0.8rem; font-weight:800; color:#4ade80;">₹${Math.round(recoItem.price).toLocaleString('en-IN')}</div>
+                    <div class="retention-upsell-box">
+                        <div style="display:flex; align-items:center; gap:0.6rem; min-width:0; flex:1;">
+                            <img src="${recoItem.image_url}" width="42" height="42" style="object-fit:cover; border-radius:0.375rem; flex-shrink:0;" onerror="this.onerror=null; this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
+                            <div style="min-width:0; flex:1;">
+                                <div style="font-size:0.7rem; font-weight:700; color:#a5b4fc;">Frequently Bought Together (Optional):</div>
+                                <div style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${recoItem.title}</div>
+                                <div style="font-size:0.78rem; font-weight:800; color:#4ade80;">₹${Math.round(recoItem.price).toLocaleString('en-IN')}</div>
+                            </div>
                         </div>
-                        <button onclick="app.addToCart('${recoItem.product_id}'); app.showToast('Added ${recoItem.title} to your order!');" style="background:#2563eb; color:#fff; border:none; padding:0.45rem 0.85rem; border-radius:0.375rem; font-size:0.8rem; font-weight:700; cursor:pointer;">+ Add Item</button>
+                        <button onclick="app.addToCart('${recoItem.product_id}'); app.showToast('Added ${recoItem.title} to your order!');" class="retention-upsell-btn">+ Add Item</button>
                     </div>
                 ` : ''}
             </div>
