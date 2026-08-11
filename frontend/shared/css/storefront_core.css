@@ -1288,34 +1288,41 @@ body {
     max-height: 140px;
   }
 
-  /* Compact Single-Component Controlled A/B Evaluation on Mobile */
+  /* Controlled A/B Evaluation Single-Column Stacked Layout on Mobile */
   .ab-grid-wrap {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.45rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .ab-column {
-    padding: 0.55rem 0.45rem !important;
-    border-radius: 0.5rem !important;
+    width: 100% !important;
+    padding: 0.85rem !important;
+    border-radius: 0.75rem !important;
+    box-sizing: border-box !important;
   }
   .ab-column-title {
-    font-size: 0.72rem !important;
+    font-size: 0.85rem !important;
     font-weight: 800 !important;
   }
   .ab-column-tag {
-    display: none !important;
+    display: inline-block !important;
+    font-size: 0.65rem !important;
+    padding: 0.15rem 0.4rem !important;
   }
   .ab-item-row {
-    padding: 0.35rem 0.25rem !important;
-    gap: 0.35rem !important;
+    padding: 0.5rem 0.4rem !important;
+    gap: 0.5rem !important;
   }
   .ab-item-img {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 0.25rem !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 0.35rem !important;
   }
   .ab-item-title {
-    font-size: 0.65rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
   }
   .ab-item-price {
     font-size: 0.625rem !important;
