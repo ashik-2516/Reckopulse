@@ -381,11 +381,14 @@
             .stage-3d-card-stack { height: 260px; }
         }
 
+        .mobile-only-cta { display: none !important; }
+
         @media (max-width: 768px) {
             .hero-section { padding: 3.5rem 1rem 2.5rem 1rem; }
             .stage-3d-wrap { display: none; } /* Mobile Fallback */
             .page-section { padding: 3.5rem 1rem; }
             .navbar-inner .nav-right-actions .btn-nav-primary { display: none !important; }
+            .mobile-only-cta { display: block !important; }
         }
     </style>
 </head>
@@ -420,7 +423,7 @@
                 <li><a href="#stores" class="nav-link" onclick="closeMobileMenu()">Storefronts</a></li>
                 <li><a href="#merchant" class="nav-link" onclick="closeMobileMenu()">Intelligence</a></li>
                 <li><a href="#hood" class="nav-link" onclick="closeMobileMenu()">Under the Hood</a></li>
-                <li style="margin-top: 0.5rem;"><a href="/store/clothing" class="btn-nav-primary" style="display: block; text-align: center;" onclick="closeMobileMenu()">Explore RecoPulse →</a></li>
+                <li class="mobile-only-cta" style="margin-top: 0.5rem;"><a href="/store/clothing" class="btn-nav-primary" style="display: block; text-align: center;" onclick="closeMobileMenu()">Explore RecoPulse →</a></li>
             </ul>
 
             <div class="nav-right-actions" style="display:flex; align-items:center; gap:0.5rem;">

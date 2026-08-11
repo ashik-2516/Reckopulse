@@ -264,6 +264,23 @@ body {
   align-items: start;
 }
 
+@media (min-width: 769px) {
+  .content-grid {
+    display: grid !important;
+    grid-template-columns: 240px 1fr !important;
+    gap: 1.75rem !important;
+    align-items: start !important;
+  }
+  .filter-sidebar {
+    display: block !important;
+    position: sticky !important;
+    top: 90px !important;
+    width: 240px !important;
+    max-width: 240px !important;
+    box-sizing: border-box !important;
+  }
+}
+
 /* Sidebar Filters Styling */
 .filter-sidebar {
   background: #ffffff;
@@ -275,6 +292,7 @@ body {
   top: 155px;
   z-index: 20;
   color: #0f172a;
+  box-sizing: border-box;
 }
 
 .filter-title {

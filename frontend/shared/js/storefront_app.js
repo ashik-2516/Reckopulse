@@ -1313,14 +1313,23 @@ class StorefrontApp {
     }
 
     // Guided Interactive Customer & Retention Journey Engine
-    runLiveCustomerJourney() {
+    async runLiveCustomerJourney() {
         if (this.journeyState && this.journeyState.active) {
             this.stopJourney();
             return;
         }
 
-        const sampleProduct = this.catalog && this.catalog.length > 0 ? this.catalog[0] : null;
-        if (!sampleProduct) return;
+        if (!this.catalog || this.catalog.length === 0) {
+            this.showToast('Loading catalog data...', 'info');
+            await this.loadCatalog();
+        }
+
+        const sampleProduct = (this.catalog && this.catalog.length > 0) ? this.catalog[0] : {
+            product_id: 'prod-01',
+            title: 'Featured Item',
+            price: 1299,
+            image_url: '/frontend/shared/favicons/favicon-recopulse.svg'
+        };
         const pid = sampleProduct.product_id;
 
         this.journeySteps = [
