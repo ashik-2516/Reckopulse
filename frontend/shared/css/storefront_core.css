@@ -279,52 +279,63 @@ body {
     max-width: 240px !important;
     box-sizing: border-box !important;
   }
+  .mobile-filter-bar,
+  #mobile-filter-bar-container,
+  .mobile-filter-drawer,
+  #mobile-filter-drawer {
+    display: none !important;
+  }
 }
 
-/* Sidebar Filters Styling */
-.filter-sidebar {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.85rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 155px;
-  z-index: 20;
-  color: #0f172a;
-  box-sizing: border-box;
+/* Sidebar Filters Styling (Universal Bright White across all 4 storefronts) */
+.filter-sidebar,
+[data-theme="dark"] .filter-sidebar {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.85rem !important;
+  padding: 1.25rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  position: sticky !important;
+  top: 155px !important;
+  z-index: 20 !important;
+  color: #0f172a !important;
+  box-sizing: border-box !important;
 }
 
-.filter-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #0f172a;
+.filter-title,
+[data-theme="dark"] .filter-title {
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
 }
 
-.filter-label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: #475569;
-  letter-spacing: 0.06em;
-  margin-bottom: 0.5rem;
-  display: block;
+.filter-label,
+[data-theme="dark"] .filter-label {
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  color: #475569 !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 0.5rem !important;
+  display: block !important;
 }
 
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #334155;
-  margin-bottom: 0.45rem;
-  cursor: pointer;
-  transition: color 0.15s ease;
+.filter-option,
+[data-theme="dark"] .filter-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  margin-bottom: 0.45rem !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease !important;
 }
 
-.filter-option:hover {
-  color: #2563eb;
+.filter-option:hover,
+[data-theme="dark"] .filter-option:hover {
+  color: #2563eb !important;
 }
 
 .btn-clear-filter {
@@ -334,30 +345,6 @@ body {
   border: none;
   cursor: pointer;
   font-weight: 700;
-}
-
-/* Dark Mode High-Contrast Rules for Filter Sidebar */
-[data-theme="dark"] .filter-sidebar {
-  background: #111827 !important;
-  border-color: #1f2937 !important;
-  color: #f9fafb !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
-}
-
-[data-theme="dark"] .filter-title {
-  color: #ffffff !important;
-}
-
-[data-theme="dark"] .filter-label {
-  color: #9ca3af !important;
-}
-
-[data-theme="dark"] .filter-option {
-  color: #e5e7eb !important;
-}
-
-[data-theme="dark"] .filter-option:hover {
-  color: #60a5fa !important;
 }
 
 [data-theme="dark"] .btn-clear-filter {
@@ -869,13 +856,14 @@ body {
   background: white;
   box-shadow: var(--shadow-lg);
   z-index: 2001;
-  display: flex;
+  display: none !important;
   flex-direction: column;
   transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
   visibility: hidden;
 }
 
 .cart-drawer.active {
+  display: flex !important;
   right: 0;
   visibility: visible;
 }
