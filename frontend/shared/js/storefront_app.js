@@ -441,6 +441,7 @@ class StorefrontApp {
     }
 
     renderCatalog() {
+        this.renderMobileFilterBar();
         const grid = document.getElementById('catalog-grid');
         const countEl = document.getElementById('results-count');
         if (countEl) countEl.innerText = `Showing ${this.filteredCatalog.length} of ${this.catalog.length} products`;
@@ -459,6 +460,131 @@ class StorefrontApp {
         }
 
         grid.innerHTML = this.filteredCatalog.map(p => this.createCardHTML(p)).join('');
+    }
+
+    renderMobileFilterBar() {
+        const grid = document.getElementById('catalog-grid') || document.querySelector('.product-grid');
+        if (!grid || !grid.parentNode) return;
+
+        let bar = document.getElementById('mobile-filter-bar-container');
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'mobile-filter-bar-container';
+            bar.className = 'mobile-filter-bar';
+            grid.parentNode.insertBefore(bar, grid);
+        }
+
+        let activeCount = 0;
+        if (this.filters.brand && this.filters.brand !== 'all') activeCount++;
+        if (this.filters.priceRange && this.filters.priceRange !== 'all') activeCount++;
+        if (this.filters.minRating && this.filters.minRating > 0) activeCount++;
+
+        const brands = Array.from(new Set((this.catalog || []).map(p => p.brand))).filter(Boolean);
+
+        bar.innerHTML = `
+            <button class="mobile-filter-btn" onclick="app.openMobileFilterDrawer()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                <span>Filters</span>
+                <span class="filter-count-badge">${activeCount}</span>
+            </button>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <select class="mobile-sort-select" onchange="app.setSortOption(this.value)">
+                    <option value="relevance" ${this.filters.sortBy === 'relevance' ? 'selected' : ''}>Sort: Popularity</option>
+                    <option value="price_low" ${this.filters.sortBy === 'price_low' ? 'selected' : ''}>Price: Low to High</option>
+                    <option value="price_high" ${this.filters.sortBy === 'price_high' ? 'selected' : ''}>Price: High to Low</option>
+                    <option value="rating" ${this.filters.sortBy === 'rating' ? 'selected' : ''}>Rating: High to Low</option>
+                </select>
+            </div>
+        `;
+
+        let drawer = document.getElementById('mobile-filter-drawer');
+        if (!drawer) {
+            drawer = document.createElement('div');
+            drawer.id = 'mobile-filter-drawer';
+            drawer.className = 'mobile-filter-drawer';
+            document.body.appendChild(drawer);
+        }
+
+        drawer.innerHTML = `
+            <div class="mobile-filter-drawer-overlay" onclick="app.closeMobileFilterDrawer()"></div>
+            <div class="mobile-filter-drawer-content">
+                <div class="mobile-filter-drawer-header">
+                    <div style="font-weight:800; font-size:1.1rem; color:#0f172a;">Filter Products</div>
+                    <button class="modal-close-btn" onclick="app.closeMobileFilterDrawer()">✕</button>
+                </div>
+                <div class="mobile-filter-drawer-body">
+                    <div class="filter-group">
+                        <div style="font-weight:700; font-size:0.85rem; color:#334155; margin-bottom:0.5rem;">Brand</div>
+                        <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:#475569; cursor:pointer;">
+                                <input type="radio" name="mobile-brand" value="all" ${this.filters.brand === 'all' ? 'checked' : ''} />
+                                <span>All Brands</span>
+                            </label>
+                            ${brands.map(b => `
+                                <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:#475569; cursor:pointer;">
+                                    <input type="radio" name="mobile-brand" value="${b}" ${this.filters.brand === b ? 'checked' : ''} />
+                                    <span>${b}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <div style="font-weight:700; font-size:0.85rem; color:#334155; margin-bottom:0.5rem;">Price Range</div>
+                        <select id="mobile-price-filter-select" class="sort-select" style="width:100%;">
+                            <option value="all" ${this.filters.priceRange === 'all' ? 'selected' : ''}>All Prices</option>
+                            <option value="under1000" ${this.filters.priceRange === 'under1000' ? 'selected' : ''}>Under ₹1,000</option>
+                            <option value="1000to3000" ${this.filters.priceRange === '1000to3000' ? 'selected' : ''}>₹1,000 - ₹3,000</option>
+                            <option value="over3000" ${this.filters.priceRange === 'over3000' ? 'selected' : ''}>Above ₹3,000</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div style="font-weight:700; font-size:0.85rem; color:#334155; margin-bottom:0.5rem;">Minimum Rating</div>
+                        <select id="mobile-rating-filter-select" class="sort-select" style="width:100%;">
+                            <option value="0" ${this.filters.minRating === 0 ? 'selected' : ''}>All Ratings</option>
+                            <option value="4.5" ${this.filters.minRating === 4.5 ? 'selected' : ''}>4.5★ & Above</option>
+                            <option value="4.0" ${this.filters.minRating === 4.0 ? 'selected' : ''}>4.0★ & Above</option>
+                            <option value="3.5" ${this.filters.minRating === 3.5 ? 'selected' : ''}>3.5★ & Above</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mobile-filter-drawer-footer">
+                    <button class="btn-secondary" onclick="app.clearAllFilters(); app.closeMobileFilterDrawer();">Clear All</button>
+                    <button class="btn-primary" style="background:#2563eb; color:#fff;" onclick="app.applyMobileFilterDrawer()">Apply Filters</button>
+                </div>
+            </div>
+        `;
+    }
+
+    openMobileFilterDrawer() {
+        const drawer = document.getElementById('mobile-filter-drawer');
+        if (drawer) drawer.classList.add('open');
+    }
+
+    closeMobileFilterDrawer() {
+        const drawer = document.getElementById('mobile-filter-drawer');
+        if (drawer) drawer.classList.remove('open');
+    }
+
+    applyMobileFilterDrawer() {
+        const checkedBrand = document.querySelector('input[name="mobile-brand"]:checked');
+        if (checkedBrand) this.filters.brand = checkedBrand.value;
+
+        const priceEl = document.getElementById('mobile-price-filter-select');
+        if (priceEl) this.filters.priceRange = priceEl.value;
+
+        const ratingEl = document.getElementById('mobile-rating-filter-select');
+        if (ratingEl) this.filters.minRating = parseFloat(ratingEl.value) || 0;
+
+        this.applyFilters();
+        this.renderCatalog();
+        this.closeMobileFilterDrawer();
+        this.showToast('Filters applied');
+    }
+
+    setSortOption(val) {
+        this.filters.sortBy = val;
+        this.applyFilters();
+        this.renderCatalog();
     }
 
     createCardHTML(p, isCarousel = false) {
@@ -585,26 +711,26 @@ class StorefrontApp {
                 </div>
 
                 <!-- Side-by-Side Product Comparison Grid -->
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem;">
+                <div class="ab-grid-wrap">
                     
                     <!-- BEFORE RECO PULSE (Baseline) -->
-                    <div style="background:#080808; border:1px solid #1a1a1a; border-radius:0.75rem; padding:1.25rem;">
+                    <div class="ab-column ab-column-before" style="background:#080808; border:1px solid #1a1a1a; border-radius:0.75rem; padding:1.25rem;">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1a1a1a; padding-bottom:0.75rem; margin-bottom:1rem;">
                             <div>
                                 <span style="font-size:0.7rem; font-weight:700; color:#8a8a8a; text-transform:uppercase;">Baseline</span>
-                                <h3 style="font-size:1.05rem; font-weight:800; color:#f87171; margin:0.15rem 0 0 0;">WITHOUT RECO PULSE</h3>
+                                <h3 class="ab-column-title" style="font-size:1.05rem; font-weight:800; color:#f87171; margin:0.15rem 0 0 0;">WITHOUT RECO PULSE</h3>
                             </div>
-                            <span style="font-size:0.7rem; background:#1a1a1a; color:#8a8a8a; padding:0.2rem 0.5rem; border-radius:0.25rem;">Generic Popularity</span>
+                            <span class="ab-column-tag" style="font-size:0.7rem; background:#1a1a1a; color:#8a8a8a; padding:0.2rem 0.5rem; border-radius:0.25rem;">Generic Popularity</span>
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:0.75rem;">
                             ${withoutList.map(item => `
-                                <div style="display:flex; align-items:center; gap:0.75rem; background:#0c0c0c; border:1px solid #181818; padding:0.6rem; border-radius:0.5rem;">
-                                    <span style="font-size:0.8rem; font-weight:800; color:#8a8a8a; min-width:1.5rem;">#${item.rank}</span>
-                                    <img src="${item.image_url}" style="width:44px; height:44px; object-fit:cover; border-radius:0.35rem;" onerror="this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
+                                <div class="ab-item-row" style="display:flex; align-items:center; gap:0.75rem; background:#0c0c0c; border:1px solid #181818; padding:0.6rem; border-radius:0.5rem;">
+                                    <span style="font-size:0.8rem; font-weight:800; color:#8a8a8a; min-width:1.2rem;">#${item.rank}</span>
+                                    <img src="${item.image_url}" class="ab-item-img" style="width:44px; height:44px; object-fit:cover; border-radius:0.35rem;" onerror="this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
                                     <div style="flex-grow:1; min-width:0;">
-                                        <div style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
-                                        <div style="font-size:0.75rem; color:#8a8a8a;">₹${Math.round(item.price).toLocaleString('en-IN')}</div>
+                                        <div class="ab-item-title" style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
+                                        <div class="ab-item-price" style="font-size:0.75rem; color:#8a8a8a;">₹${Math.round(item.price).toLocaleString('en-IN')}</div>
                                     </div>
                                 </div>
                             `).join('')}
@@ -612,13 +738,13 @@ class StorefrontApp {
                     </div>
 
                     <!-- WITH RECO PULSE (Personalized Hybrid) -->
-                    <div style="background:#080808; border:1px solid #1e293b; border-radius:0.75rem; padding:1.25rem;">
+                    <div class="ab-column ab-column-after" style="background:#080808; border:1px solid #1e293b; border-radius:0.75rem; padding:1.25rem;">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1e293b; padding-bottom:0.75rem; margin-bottom:1rem;">
                             <div>
                                 <span style="font-size:0.7rem; font-weight:700; color:#3b82f6; text-transform:uppercase;">Intelligent Hybrid</span>
-                                <h3 style="font-size:1.05rem; font-weight:800; color:#3b82f6; margin:0.15rem 0 0 0;">WITH RECO PULSE</h3>
+                                <h3 class="ab-column-title" style="font-size:1.05rem; font-weight:800; color:#3b82f6; margin:0.15rem 0 0 0;">WITH RECO PULSE</h3>
                             </div>
-                            <span style="font-size:0.7rem; background:#1e3a8a; color:#93c5fd; padding:0.2rem 0.5rem; border-radius:0.25rem;">Personalized</span>
+                            <span class="ab-column-tag" style="font-size:0.7rem; background:#1e3a8a; color:#93c5fd; padding:0.2rem 0.5rem; border-radius:0.25rem;">Personalized</span>
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:0.75rem;">
@@ -626,19 +752,19 @@ class StorefrontApp {
                                 const disp = displacements[idx] || {};
                                 const badgeColor = disp.status && disp.status.includes('↑') ? '#34d399' : (disp.status === 'NEW' ? '#3b82f6' : '#8a8a8a');
                                 return `
-                                    <div style="display:flex; align-items:center; gap:0.75rem; background:#0c0c0c; border:1px solid #1e293b; padding:0.6rem; border-radius:0.5rem; position:relative;">
-                                        <span style="font-size:0.8rem; font-weight:800; color:#3b82f6; min-width:1.5rem;">#${item.rank}</span>
-                                        <img src="${item.image_url}" style="width:44px; height:44px; object-fit:cover; border-radius:0.35rem;" onerror="this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
+                                    <div class="ab-item-row" style="display:flex; align-items:center; gap:0.75rem; background:#0c0c0c; border:1px solid #1e293b; padding:0.6rem; border-radius:0.5rem; position:relative;">
+                                        <span style="font-size:0.8rem; font-weight:800; color:#3b82f6; min-width:1.2rem;">#${item.rank}</span>
+                                        <img src="${item.image_url}" class="ab-item-img" style="width:44px; height:44px; object-fit:cover; border-radius:0.35rem;" onerror="this.src='/frontend/shared/favicons/favicon-recopulse.svg';" />
                                         <div style="flex-grow:1; min-width:0;">
-                                            <div style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
-                                            <div style="font-size:0.75rem; color:#8a8a8a; display:flex; justify-content:space-between; align-items:center; margin-top:0.15rem;">
+                                            <div class="ab-item-title" style="font-size:0.8rem; font-weight:700; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
+                                            <div class="ab-item-price" style="font-size:0.75rem; color:#8a8a8a; display:flex; justify-content:space-between; align-items:center; margin-top:0.15rem;">
                                                 <span>₹${Math.round(item.price).toLocaleString('en-IN')}</span>
                                                 <button onclick="app.showWhyThisModal('${item.product_id}', '${encodeURIComponent(item.title)}', '${encodeURIComponent(item.explanation || 'Personalized signal')}')" style="background:none; border:none; color:#3b82f6; font-size:0.7rem; font-weight:700; cursor:pointer; padding:0;">
-                                                    Why this changed?
+                                                    Why?
                                                 </button>
                                             </div>
                                         </div>
-                                        <span style="font-size:0.7rem; font-weight:800; color:${badgeColor}; background:#111827; border:1px solid ${badgeColor}; padding:0.15rem 0.4rem; border-radius:0.25rem;">
+                                        <span style="font-size:0.68rem; font-weight:800; color:${badgeColor}; background:#111827; border:1px solid ${badgeColor}; padding:0.12rem 0.35rem; border-radius:0.25rem;">
                                             ${disp.status || '—'}
                                         </span>
                                     </div>

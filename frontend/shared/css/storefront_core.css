@@ -1249,12 +1249,17 @@ body {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
   }
+  .store-switcher-menu {
+    left: 0 !important;
+    right: auto !important;
+    width: 230px !important;
+    max-width: calc(100vw - 1.5rem) !important;
+  }
   .content-grid {
     grid-template-columns: 1fr;
   }
   .filter-sidebar {
-    position: static;
-    margin-bottom: 1.5rem;
+    display: none !important; /* Hide inline sidebar on mobile so products scroll cleanly */
   }
   .modal-card {
     grid-template-columns: 1fr;
@@ -1266,6 +1271,167 @@ body {
   .card-img-container, .card-img {
     height: 140px;
     max-height: 140px;
+  }
+
+  /* Compact Single-Component Controlled A/B Evaluation on Mobile */
+  .ab-grid-wrap {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.45rem !important;
+  }
+  .ab-column {
+    padding: 0.55rem 0.45rem !important;
+    border-radius: 0.5rem !important;
+  }
+  .ab-column-title {
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+  }
+  .ab-column-tag {
+    display: none !important;
+  }
+  .ab-item-row {
+    padding: 0.35rem 0.25rem !important;
+    gap: 0.35rem !important;
+  }
+  .ab-item-img {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 0.25rem !important;
+  }
+  .ab-item-title {
+    font-size: 0.65rem !important;
+    line-height: 1.1 !important;
+  }
+  .ab-item-price {
+    font-size: 0.625rem !important;
+  }
+  .ab-status-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.35rem !important;
+    font-size: 0.68rem !important;
+    padding: 0.5rem !important;
+  }
+
+  /* Sticky Mobile Filter & Sort Bar (Myntra / Ajio E-Commerce Pattern) */
+  .mobile-filter-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.45rem 0.75rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+  }
+
+  .mobile-filter-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    padding: 0.4rem 0.85rem !important;
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+  }
+
+  .filter-count-badge {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    font-size: 0.68rem !important;
+    padding: 0.1rem 0.4rem !important;
+    border-radius: 9999px !important;
+    font-weight: 800 !important;
+  }
+
+  .mobile-sort-select {
+    padding: 0.4rem 0.75rem !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: #0f172a !important;
+  }
+
+  /* Sliding Bottom Sheet Filter Drawer */
+  .mobile-filter-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 3500 !important;
+    display: none;
+  }
+
+  .mobile-filter-drawer.open {
+    display: block !important;
+  }
+
+  .mobile-filter-drawer-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+  }
+
+  .mobile-filter-drawer-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.35);
+    animation: slideUpDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUpDrawer {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .mobile-filter-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .mobile-filter-drawer-body {
+    padding: 1.25rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .mobile-filter-drawer-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+  }
+
+  .mobile-filter-drawer-footer button {
+    flex: 1;
+    padding: 0.65rem !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    border-radius: 0.5rem !important;
   }
 
   /* Collapsible Floating Evaluator Toolbar on Mobile */

@@ -385,7 +385,7 @@
             .hero-section { padding: 3.5rem 1rem 2.5rem 1rem; }
             .stage-3d-wrap { display: none; } /* Mobile Fallback */
             .page-section { padding: 3.5rem 1rem; }
-            .btn-nav-primary { font-size: 0.8rem; padding: 0.45rem 0.85rem; }
+            .navbar-inner .nav-right-actions .btn-nav-primary { display: none !important; }
         }
     </style>
 </head>
@@ -420,6 +420,7 @@
                 <li><a href="#stores" class="nav-link" onclick="closeMobileMenu()">Storefronts</a></li>
                 <li><a href="#merchant" class="nav-link" onclick="closeMobileMenu()">Intelligence</a></li>
                 <li><a href="#hood" class="nav-link" onclick="closeMobileMenu()">Under the Hood</a></li>
+                <li style="margin-top: 0.5rem;"><a href="/store/clothing" class="btn-nav-primary" style="display: block; text-align: center;" onclick="closeMobileMenu()">Explore RecoPulse →</a></li>
             </ul>
 
             <div class="nav-right-actions" style="display:flex; align-items:center; gap:0.5rem;">
