@@ -10,6 +10,16 @@ class StorefrontApp {
         this.catalog = [];
         this.filteredCatalog = [];
         
+        // Immediate Global Window Binding for 100% reliable click handling across all versions
+        window.app = this;
+        window.runLiveCustomerJourney = () => this.runLiveCustomerJourney();
+        window.replayOnboarding = () => this.replayOnboarding();
+        window.skipOnboarding = () => this.skipOnboarding();
+        window.nextOnboardingStep = () => this.nextOnboardingStep();
+        window.switchPersona = (p) => this.switchPersona(p);
+        window.activateTrendSignal = (id) => this.activateTrendSignal(id);
+        window.resetSession = () => this.resetSession();
+
         // Persistent Client State (Isolates per Visitor & Storefront)
         this.visitorId = localStorage.getItem('recopulse_visitor_id');
         if (!this.visitorId) {
@@ -1328,7 +1338,7 @@ class StorefrontApp {
 
         // Always reset cart, wishlist, and retention state for clean demo start
         this.cart = [];
-        this.wishlist = [];
+        this.wishlist = new Set();
         this.isCartAbandoned = false;
         this.discountAmount = 0;
         this.saveCart();
@@ -1528,7 +1538,7 @@ class StorefrontApp {
 
         // Reset cart and wishlist so session is clean after demo completion
         this.cart = [];
-        this.wishlist = [];
+        this.wishlist = new Set();
         this.isCartAbandoned = false;
         this.discountAmount = 0;
         this.saveCart();
